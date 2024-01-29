@@ -1,0 +1,40 @@
+{% extends "core.html" %}
+{% block content %}
+<div id="pagetitle">
+    <h2>Librarian Login</h2>
+</div>
+<div class="container" id="pagetitle2" style="margin-top: 3%;">
+<div class="row d-flex justify-content-center">
+<div class="col-4">
+</div>
+<div class="col-4">
+<!--  TODO : change form action to action="/login" after defining login validation function -->
+<form action="/librarianlogin" method="POST" id="login-form">
+<div class="form-group" style="margin-top: 3%;">
+<label for="user">Username</label>
+<input class="form-control" type="username" name="username" placeholder="Username" required>
+</div>
+<div class="form-group" style="margin-top: 10%;">
+<label for="pass">Password</label>
+<input class="form-control" type="password" name="password" placeholder="Password" required minlength="4">
+</div>
+<!-- <input type="submit" class="btn btn-secondary btn-custom" name="Login"/> -->
+<div class="mb-3">
+<input type="submit" class="btn btn-secondary btn-custom" value="Login" />
+</div>
+{# <p class="text-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.muted">Not a member? <a href="/signup">Register</a></p> #}
+{% if username_error %}
+    <p><span style="color: rgb(255, 0, 0);">The username you entered doesn't belong to an account. Please check your username and try again.</span></p>
+{% endif %}
+{% if pwd_error %}
+    <p><span style="color: rgb(255, 0, 0);">Sorry, your password was incorrect. Please double-check your password.</span></p>
+{% endif %}
+</form>
+</div>
+<div class="col-4">
+</div>
+</div>
+</div>
+
+</div>
+{% endblock content%}
