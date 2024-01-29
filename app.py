@@ -1,35 +1,25 @@
-from flask import Flask, request, redirect, url_for
-from flask import render_template
+from flask import Flask
+from application.database import db
+from application.models import *
+from application.config import KEY, DB
+
+from flask_security import UserMixin, RoleMixin
 
 # create app instance
-app = Flask(__name__)
+def create_app(KEY, DB):
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite3'
+    with open(KEY) as f:
+        key = f.readline()
+        app.secret_key = bytes(key, 'utf-8')
+    db.init_app(app)
+    db.create_all()
+    app.app_context().push()
+    return app
 
-# home page
-@app.route("/")
-@app.route("/home")
-def home():
-    # if user isn't logged in, redirect to welcome page
-    return render_template('welcome.html')
+app = create_app(KEY, DB)
 
-    # if user is logged in, redirect to user dashboard page
-    return render_template('index.html')
-
-# user login page
-
-
-# librarian login page
-
-
-# user register page
-
-
-# general user profile page
-
-
-# librarian dashboard
-
-
-
+from application.controllers import *
 
 # app run   
 if __name__ == "__main__":
