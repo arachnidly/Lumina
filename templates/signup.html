@@ -10,7 +10,7 @@
 <div class="col-4">
 
 <form action="/signup" method="POST" id="signup-form">
-<div class="form-group" style="margin-top: 3%;">
+<div class="form-group">
 <label for="user">Username</label>
 <input class="form-control" type="username" name="username" placeholder="Username" required>
 </div>
@@ -23,10 +23,10 @@
 <input class="form-control" type="password" name="password2" placeholder="Re-enter Password" required minlength="4">
 </div>
 
-<div class="mb-3">
-<input type="submit" class="btn btn-secondary btn-custom" value="Sign up"/>
+<div class="mb-3" style="margin-top: 10%;">
+<input type="submit" class="btn btn-primary btn-custom" value="Sign up"/>
 </div>
-<p class="text-muted">Have an account? <a href="/login">Log in</a></p>
+<p class="text-muted" style="margin-top: 10%;">Have an account? <a href="/login">Log in</a></p>
 {% if username_error %}
     <p><span style="color: rgb(255, 0, 0);">Username already exists. Please log in.</span></p>
 {% endif %}

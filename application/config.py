@@ -1,2 +1,2 @@
 KEY = ".key"
-DB = "sqlite:///./instance/database.sqlite3"
+DB = "sqlite:///./instance/test.sqlite3"
