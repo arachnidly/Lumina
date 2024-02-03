@@ -1,0 +1,32 @@
+{% extends 'core.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <img src="image_url_here" alt=>
+        </div>
+        
+        <div class="col">
+            <h1>{{ book.title }}</h1>
+            <p>Description: {{ book.description }}</p>
+            <p>Author: {{ book.author }}</p>
+
+            <p>Average User Rating: {{book.avgrating }}</p>
+        
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h2>Reviews</h2>
+            <ul>
+                {% for review in book.reviews %}
+                    <li>{{ review.content }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+</div>
+
+{% endblock %}
