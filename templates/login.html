@@ -1,4 +1,22 @@
 {%extends "core.html"%}
+
+{%block navcontent%}
+<nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" style="left: 50%; transform: translateX(-50%);" href="/home">Lumina</a>
+            {%if title=="Login" %}
+            <div class="navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" id="jtext" href="/librarianlogin">Librarian Login</a>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+{%endblock%}
+
 {%block content%}
 <div>
     <div id="pagetitle">
@@ -10,10 +28,10 @@
             </div>
             <div class="col-4">
                 {% if lib %}
-                    <form action="/librarianlogin" method="POST" id="login-form">
-                {% else %}
+                <form action="/librarianlogin" method="POST" id="login-form">
+                    {% else %}
                     <form action="/login" method="POST" id="login-form">
-                {% endif %}
+                        {% endif %}
 
                         <div class="form-group">
                             <label for="user">Username</label>

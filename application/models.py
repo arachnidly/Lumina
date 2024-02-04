@@ -1,28 +1,30 @@
 from application.database import db
 from flask_security import UserMixin, RoleMixin
-from sqlalchemy import CheckConstraint
+# Remove the unused import statement for "CheckConstraint"
+# from sqlalchemy import CheckConstraint
 
 # create model for relationship between roles and users
 roles_users = db.Table('roles_users',
-                       db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
-                       db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
+                       db.Column('user_id', db.Integer(), db.ForeignKey('users.id')),
+                       db.Column('role_id', db.Integer(), db.ForeignKey('roles.id')))
 
 
 # create model for roles
-class Role(db.Model, RoleMixin):
-    __tablename__ = 'role'
+class Roles(db.Model, RoleMixin):
+    __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
     description = db.Column(db.String(255))
 
 
 # create  model for user that stores the type of user in roles
-class User(db.Model, UserMixin):
-    __tablename__ = 'user'
+class Users(db.Model, UserMixin):
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
-    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
+    roles = db.relationship('Roles', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
+    # book_requests = db.relationship('Books', secondary=book_requests, backref=db.backref('users', lazy='dynamic'))
 
 
 # Association table for the many-to-many relationship between sections and books
@@ -43,7 +45,6 @@ class Sections(db.Model):
 
     def __repr__(self):
         return f'<Section {self.name}>'
-
 
 
 # Association table for the many-to-many relationship between books and authors
@@ -77,18 +78,21 @@ class Books(db.Model):
         return f'<Book {self.name}>'
 
 
-# class Book_Requests(db.Model):
-#     __tablename__ = 'book_requests'
-#     id = db.Column(db.Integer, primary_key=True)
-#     book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#     date_created = db.Column(db.DateTime, nullable=False)
+# # Association table for the many-to-many relationship between books and users for tracking requests
+# book_requests = db.Table('book_requests',
+#                         db.Column('user_id', db.Integer(), db.ForeignKey('users.id')),
+#                         db.Column('book_id', db.Integer(), db.ForeignKey('books.id')),
+#                         db.Column('date_requested', db.Date))
 
 
-# class BookLog(db.Model):
-#     __tablename__ = 'book_log'
-#     id = db.Column(db.Integer, primary_key=True)
-#     book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
-#     issued_to = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#     date_issued = db.Column(db.DateTime, nullable=False)
-#     date_returned = db.Column(db.DateTime, nullable=False)
+class Requests(db.Model):
+    __tablename__ = 'requests'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
+    date_requested = db.Column(db.Date)
+
+    def __repr__(self):
+        return f'<Request {self.id}>'
+    
