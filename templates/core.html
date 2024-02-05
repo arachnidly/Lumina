@@ -2,77 +2,131 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lumina - {{ title }}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ephesis&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumina - {{ title }}</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ephesis&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
 
-    <style>
-        .navbar {
-            background-color: #9ad0c2;
-        }
+  <style>
+    .navbar {
+      background-color: #9ad0c2;
+    }
 
-        .navbar-brand {
-            position: relative;
-            font-family: 'Ephesis', cursive;
-            font-size: 300%;
-        }
+    .navbar-brand {
+      position: relative;
+      font-family: "Ephesis", cursive;
+      font-size: 300%;
+    }
 
-        .nav-item {
-            font-size: larger;
-        }
+    .nav-item {
+      font-size: large;
+      margin-left: 15px;
+    }
 
-        body {
-            font-family: 'Roboto Mono', monospace;
-            background-color: #ECF4D6;
-        }
 
-        /* Style for the buttons */
-        .btn-custom {
-            background-color: #2D9596;
-            border: #2D9596;
-            font-family: 'Roboto Mono', monospace;
-            font-size: large;
-            color: white;
-        }
+    body {
+      font-family: "Roboto Mono", monospace;
+      background-color: #ecf4d6;
+    }
 
-        #pagetitle {
-            text-align: center;
-            font-family: 'Roboto Mono', monospace;
-            margin-top: 5%;
-        }
+    /* Style for the buttons */
+    .btn-custom {
+      background-color: #2d9596;
+      border: #2d9596;
+      font-family: "Roboto Mono", monospace;
+      font-size: large;
+      color: white;
+    }
 
-        #pagetitle2 {
-            font-size: large;
-            text-align: center;
-            font-family: 'Roboto Mono', monospace;
-        }
+    #pagetitle {
+      text-align: center;
+      font-family: "Roboto Mono", monospace;
+      margin-top: 5%;
+    }
 
-        #jtext {
-            font-family: 'Roboto Mono', monospace;
-            /* text-align: center; */
-        }
-    </style>
+    #pagetitle2 {
+      font-size: large;
+      text-align: center;
+      font-family: "Roboto Mono", monospace;
+    }
 
+    #jtext {
+      font-family: "Roboto Mono", monospace;
+      /* text-align: center; */
+    }
+  </style>
 </head>
 
 <body>
-    {%block navcontent%}
-    {%endblock navcontent%}
-
+  <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
-        {% block content %}
-        {% endblock content %}
-    </div>
+      <!-- Navbar brand -->
+      {% if "user" not in session %}
+      <a class="navbar-brand" style="left: 50%; transform: translateX(-50%)" href="/home">Lumina</a>
+      {% else %}
+      <a class="navbar-brand" href="/home">Lumina</a>
+      {% endif %}
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+      <!-- Navbar toggle button -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Navbar items -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          {% if "user" not in session %}
+          {% if title == "Login" %}
+          <li class="nav-item active" id="navbarText">
+            <a class="nav-link" href="/librarianlogin">Librarian Login</a>
+          </li>
+          {% else %}
+          <li class="nav-item active" id="navbarText">
+            <a class="nav-link" href="/login">General User Login</a>
+          </li>
+          {% endif %}
+          {% else %}
+          {% if session['user_role'] == 'admin' %}
+          <li class="nav-item active">
+            <a class="nav-link" id="jtext" href="#">Catalog Management</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" id="jtext" href="#">Stats</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" id="jtext" href="/logout">Logout</a>
+          </li>
+          {% elif session['user_role'] == 'user' %}
+          <li class="nav-item active">
+            <a class="nav-link" id="jtext" href="#">Browse</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" id="jtext" href="#">Stats</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" id="jtext" href="/logout">Logout</a>
+          </li>
+          {% endif %}
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    {% block content %}
+    {% endblock content %}
+  </div>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 
 </html>

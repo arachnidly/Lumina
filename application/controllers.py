@@ -4,41 +4,62 @@ from flask import current_app as app
 from application.models import *
 from application.config import *
 
+
 # home page
 @app.route('/', methods=['GET', 'POST'])
 @app.route("/home")
 def home():
     # if user isn't logged in, redirect to welcome page with login button
     if "user" in session:
-        return render_template('home.html', title='Home')
+        role = session['user_role']
+        if role == 'admin':
+            return render_template('librariandashboard.html', title='Librarian Dashboard', role=role)
+        else:
+            return render_template('userdashboard.html', title='My Dashboard', role=role)
     else:
         return render_template('welcome.html', title='Welcome')
     
 @app.route("/login", methods=['GET', 'POST'])
-@app.route("/librarianlogin", methods=['GET', 'POST'])
 def login():
-    lib = False  # Define and initialize the 'lib' variable as False
-    if request.path == "/librarianlogin":  # Check if the route clicked is '/librarianlogin'
-        lib = True  # Set 'lib' to True if the route is '/librarianlogin'
-        pagetitle = "Librarian Login"  # Set the page title to 'Librarian Login'
-    elif request.path == "/login":  # Check if the route clicked is '/login'
-        pagetitle = "Login"  # Set the page title to 'Login'
-    
     if 'user' in session:
         return redirect("/")
     else:
         if request.method == 'GET':
-            return render_template('login.html', title=pagetitle, lib=lib)  # Render the template with the 'lib' value
+            return render_template('login.html', title="Login")  # Render the template with the 'lib' value
         if request.method == 'POST':
             username = request.form["username"].lower()
             password = request.form["password"]
             valid_user = User.query.filter_by(username=username).first()
             if valid_user is None:
-                return render_template("login.html", username_error=True, title=pagetitle, lib=lib)
+                return render_template("login.html", username_error=True, title="Login")
             if valid_user.password != password:
-                return render_template('login.html', pwd_error=True, title=pagetitle, lib=lib)
+                return render_template('login.html', pwd_error=True, title="Login")
             session['user'] = username
+            session['user_role'] = valid_user.roles[0].name
             return redirect("/")
+        
+
+@app.route("/librarianlogin", methods=['GET', 'POST'])
+def librarianlogin():
+    if 'user' in session:
+        return redirect("/")
+    else:
+        if request.method == 'GET':
+            return render_template('librarianlogin.html', title="Librarian Login")  # Render the template with the 'lib' value
+        if request.method == 'POST':
+            username = request.form["username"].lower()
+            password = request.form["password"]
+            valid_user = User.query.filter_by(username=username).first()
+            if valid_user is None:
+                return render_template("librarianlogin.html", username_error=True, title="Librarian Login")
+            if valid_user.password != password:
+                return render_template('librarianlogin.html', pwd_error=True, title="Librarian Login")
+            if valid_user.roles[0].name != 'admin':
+                return render_template('librarianlogin.html', auth_error=True, title="Librarian Login")
+            session['user'] = username
+            session['user_role'] = valid_user.roles[0].name
+            return redirect("/")
+
     
     
 # user sign-up page
@@ -66,6 +87,7 @@ def signup():
             db.session.add(user)
             db.session.commit()
             session['user'] = username
+            session['user_role'] = user.roles[0].name
             return redirect("/")
 
 

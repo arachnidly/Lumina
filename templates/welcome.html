@@ -1,25 +1,93 @@
-{% extends "core.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{%block navcontent%}
-<nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" style="left: 50%; transform: translateX(-50%);" href="/home">Lumina</a>
-        </div>
-    </nav>
-{%endblock%}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumina - {{ title }}</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ephesis&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
 
-{% block content %}
-    <div>
-        <div id="pagetitle" style="margin-top: 10%;">
-            <h2>Welcome to <span style="font-family: 'Ephesis', cursive; font-size: 60px;">Lumina</span></h2>
-        </div>
-        <div id="pagetitle2">
-            <h4>the library application</h4>
-            <h4>where words illuminate worlds</h4>
-        </div>
-        <div style="margin-top: 3%; text-align: center;">
-            <a href="/login" class="btn btn-primary btn-custom">Login</a>
+  <style>
+    .navbar {
+      background-color: #9ad0c2;
+    }
 
-        </div>
+    .navbar-brand {
+      position: relative;
+      font-family: "Ephesis", cursive;
+      font-size: 300%;
+    }
+
+    .nav-item {
+      font-size: larger;
+    }
+
+    body {
+      font-family: "Roboto Mono", monospace;
+      background-color: #ecf4d6;
+    }
+
+    /* Style for the buttons */
+    .btn-custom {
+      background-color: #2d9596;
+      border: #2d9596;
+      font-family: "Roboto Mono", monospace;
+      font-size: large;
+      color: white;
+    }
+
+    #pagetitle {
+      text-align: center;
+      font-family: "Roboto Mono", monospace;
+      margin-top: 5%;
+    }
+
+    #pagetitle2 {
+      font-size: large;
+      text-align: center;
+      font-family: "Roboto Mono", monospace;
+    }
+
+    #jtext {
+      font-family: "Roboto Mono", monospace;
+      /* text-align: center; */
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+      <!-- Navbar brand -->
+
+      <a class="navbar-brand" style="left: 50%; transform: translateX(-50%)" href="/home">Lumina</a>
+
     </div>
-{% endblock content %}
+  </nav>
+
+  <div class="container-fluid">
+    <div class="justify-content-center align-items-center">
+      <div id="pagetitle" style="margin-top: 10%;">
+        <h2>Welcome to <span style="font-family: 'Ephesis', cursive; font-size: 60px;">Lumina</span></h2>
+      </div>
+      <div id="pagetitle2">
+        <h4>the library application</h4>
+        <h4>where words illuminate worlds</h4>
+      </div>
+      <div style="margin-top: 3%; text-align: center;">
+        <a href="/login" class="btn btn-primary btn-custom">Login</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>

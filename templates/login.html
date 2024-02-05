@@ -1,71 +1,46 @@
 {%extends "core.html"%}
-
-{%block navcontent%}
-<nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" style="left: 50%; transform: translateX(-50%);" href="/home">Lumina</a>
-            {%if title=="Login" %}
-            <div class="navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item active">
-                        <a class="nav-link" id="jtext" href="/librarianlogin">Librarian Login</a>
-                    </li>
-                </ul>
-            </div>
-            {% endif %}
-        </div>
-    </nav>
-{%endblock%}
-
 {%block content%}
 <div>
     <div id="pagetitle">
-        <h2>{{title}}</h2>
+    <h2>Login</h2>
     </div>
     <div class="container" id="pagetitle2" style="margin-top: 3%;">
         <div class="row d-flex justify-content-center">
             <div class="col-4">
             </div>
             <div class="col-4">
-                {% if lib %}
-                <form action="/librarianlogin" method="POST" id="login-form">
-                    {% else %}
-                    <form action="/login" method="POST" id="login-form">
-                        {% endif %}
 
-                        <div class="form-group">
-                            <label for="user">Username</label>
-                            <input class="form-control" type="username" name="username" placeholder="Username" required>
-                        </div>
-                        <div class="form-group" style="margin-top: 10%;">
-                            <label for="pass">Password</label>
-                            <input class="form-control" type="password" name="password" placeholder="Password" required
-                                minlength="4">
-                        </div>
-                        <!-- <input type="submit" class="btn btn-secondary btn-custom" name="Login"/> -->
-                        <div class="mb-3" style="margin-top: 10%;">
-                            <input type="submit" class="btn btn-primary btn-custom" value="Login" />
-                        </div>
-                        {% if not lib %}
-                        <p class="text-muted" style="margin-top: 10%;">Not a member? <a href="/signup">Register</a></p>
-                        {% endif %}
+                <form action="/login" method="POST" id="login-form">
 
-                        {% if username_error %}
-                        <p><span style="color: rgb(255, 0, 0);">The username you entered doesn't belong to an
-                                account. Please check your username and try again.</span></p>
-                        {% endif %}
-                        {% if pwd_error %}
-                        <p><span style="color: rgb(255, 0, 0);">Sorry, your password was incorrect. Please
-                                double-check your password.</span></p>
-                        {% endif %}
-                    </form>
+                <div class="form-group">
+                    <label for="user">Username</label>
+                    <input class="form-control" type="username" name="username" placeholder="Username" required>
+                </div>
+                <div class="form-group" style="margin-top: 10%;">
+                    <label for="pass">Password</label>
+                    <input class="form-control" type="password" name="password" placeholder="Password" required
+                        minlength="4">
+                </div>
+                <div class="mb-3" style="margin-top: 10%;">
+                    <input type="submit" class="btn btn-primary btn-custom" value="Login" />
+                </div>
+
+                <p class="text-muted" style="margin-top: 10%;">Not a member? <a href="/signup">Register</a></p>
+                {% if username_error %}
+                    <p><span style="color: rgb(255, 0, 0);">The username you entered doesn't belong to an account. Please check your username and try again.</span></p>
+                {% endif %}
+
+                {% if pwd_error %}
+                    <p><span style="color: rgb(255, 0, 0);">Sorry, your password was incorrect. Please double-check your password.</span></p>
+                {% endif %}
+               
+                </form>
+
             </div>
             <div class="col-4">
             </div>
         </div>
     </div>
-
 </div>
 
-</div>
 {%endblock%}
