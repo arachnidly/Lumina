@@ -1,19 +1,93 @@
-{% extends 'core.html' %}
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumina - {{title}}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Ephesis&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
 
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <!-- Navbar brand -->
 
-{% block content %}
+            <a class="navbar-brand" href="/">Lumina</a>
 
-<div>
-    <div id="pagetitle">
-        <h2>Librarian Dashboard</h2>
+            <!-- Navbar toggle button -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navbar items -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" id="jtext" href="/home">Librarian Dashboard</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" id="jtext" href="/search">Search</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" id="jtext" href="#">Manage Catalog</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" id="jtext" href="#">Manage Users</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" id="jtext" href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- End of Navbar -->
+
+    <!-- Main content -->
+    <div class="container">
+        <div style="margin-top: 2%;">
+            <h4>User Requests</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Username</th>
+                        <th scope="col">Book Requested</th>
+                        <th scope="col">Book </th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {# {% for user in users %} #}
+                    <tr>
+                        <th scope="row">{{user.username}}</th>
+                        <td>{{request.book}}</td>
+                        <td>{{user.email}}</td>
+                        <td>
+                            <a href="/approve/{{user.id}}">Approve</a>
+                            <br>
+                            <a href="/reject/{{user.id}}">Reject</a>
+                        </td>
+                    </tr>
+                    {# {% endfor %} #}
+                </tbody>
+        </div>
     </div>
-    
-</div>
 
-</div>
+    <!-- End of main content -->
 
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- End -->
+</body>
 
-
-
-{% endblock %}
+</html>

@@ -13,9 +13,9 @@ def home():
     if "user" in session:
         role = session['user_role']
         if role == 'admin':
-            return render_template('librariandashboard.html', title='Librarian Dashboard', role=role)
+            return render_template('librariandashboard.html', title='Librarian Dashboard', role=role, user=session['user'])
         else:
-            return render_template('userdashboard.html', title='My Dashboard', role=role)
+            return render_template('userdashboard.html', title='Dashboard', role=role, user=session['user'])
     else:
         return render_template('welcome.html', title='Welcome')
     
@@ -100,3 +100,18 @@ def logout():
     return redirect(url_for("home")) 
 
 
+# search page
+@app.route("/search", methods=['GET', 'POST'])
+def search():
+    if "user" in session:
+        if request.method == 'GET':
+            return render_template('search.html', title='Search', user=session['user'], role=session['user_role'])
+        if request.method == 'POST':
+            search_term = request.form['search']
+            # books = Book.query.filter(Book.title.ilike(f'%{search_term}%')).all()
+            # return render_template('search.html', title='Search', books=books)
+            return render_template('search.html', title='Search', user=session['user'], role=session['user_role'], search_term=search_term)
+
+    else:
+        return redirect("/login")
+    

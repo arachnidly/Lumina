@@ -1,54 +1,74 @@
-{% extends "core.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumina - {{ title }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Ephesis&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
 
-{%block navcontent%}
-<nav class="navbar navbar-expand-lg navbar-light">
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
-            <a class="navbar-brand" style="left: 50%; transform: translateX(-50%);" href="/home">Lumina</a>
+            <!-- Navbar brand -->
+            <a class="navbar-brand" style="left: 50%; transform: translateX(-50%)" href="/home">Lumina</a>
         </div>
     </nav>
-{%endblock%}
 
-{% block content %}
-<div id="pagetitle">
-    <h2>Sign Up</h2>
-</div>
-<div class="container" id="pagetitle2" style="margin-top: 3%;">
-<div class="row d-flex justify-content-center">
-<div class="col-4">
-</div>
-<div class="col-4">
+    <div id="pagetitle">
+        <h2>Sign Up</h2>
+    </div>
+    <div class="container" id="pagetitle2" style="margin-top: 3%;">
+        <div class="row d-flex justify-content-center">
+            <div class="col-4">
+            </div>
+            <div class="col-4">
 
-<form action="/signup" method="POST" id="signup-form">
-<div class="form-group">
-<label for="user">Username</label>
-<input class="form-control" type="username" name="username" placeholder="Username" required>
-</div>
-<div class="form-group" style="margin-top: 10%;">
-<label for="pass">Password</label>
-<input class="form-control" type="password" name="password" placeholder="Password" required minlength="4">
-</div>
-<div class="form-group" style="margin-top: 10%;">
-<label for="pass">Re-enter Password</label>
-<input class="form-control" type="password" name="password2" placeholder="Re-enter Password" required minlength="4">
-</div>
+                <form action="/signup" method="POST" id="signup-form">
+                    <div class="form-group">
+                        <label for="user">Username</label>
+                        <input class="form-control" type="username" name="username" placeholder="Username" required>
+                    </div>
+                    <div class="form-group" style="margin-top: 10%;">
+                        <label for="pass">Password</label>
+                        <input class="form-control" type="password" name="password" placeholder="Password" required
+                            minlength="4">
+                    </div>
+                    <div class="form-group" style="margin-top: 10%;">
+                        <label for="pass">Re-enter Password</label>
+                        <input class="form-control" type="password" name="password2" placeholder="Re-enter Password"
+                            required minlength="4">
+                    </div>
 
-<div class="mb-3" style="margin-top: 10%;">
-<input type="submit" class="btn btn-primary btn-custom" value="Sign up"/>
-</div>
-<p class="text-muted" style="margin-top: 10%;">Have an account? <a href="/login">Log in</a></p>
-{% if username_error %}
-    <p><span style="color: rgb(255, 0, 0);">Username already exists. Please log in.</span></p>
-{% endif %}
-{% if pwd_error %}
-    <p><span style="color: rgb(255, 0, 0);">The passwords don't match. Please try again.</span></p>
-{% endif %}
-</form>
-</div>
-<div class="col-4">
-</div>
-</div>
-</div>
+                    <div class="mb-3" style="margin-top: 10%;">
+                        <input type="submit" class="btn btn-primary btn-custom" value="Sign up" />
+                    </div>
+                    <p class="text-muted" style="margin-top: 10%;">Have an account? <a href="/login">Log in</a></p>
+                    {% if username_error %}
+                    <p><span style="color: rgb(255, 0, 0);">Username already exists. Please log in.</span></p>
+                    {% endif %}
+                    {% if pwd_error %}
+                    <p><span style="color: rgb(255, 0, 0);">The passwords don't match. Please try again.</span></p>
+                    {% endif %}
+                </form>
+            </div>
+            <div class="col-4">
+            </div>
+        </div>
+    </div>
 
-</div>
-{% endblock content%}
+    </div>
+     <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>

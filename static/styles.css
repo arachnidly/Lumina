@@ -1,0 +1,61 @@
+
+.navbar {
+    background-color: #9ad0c2;
+}
+
+.navbar-brand {
+    position: relative;
+    font-family: "Ephesis", cursive;
+    font-size: 300%;
+}
+
+.nav-item {
+    font-size: large;
+    margin-left: 15px;
+}
+
+.card {
+    width: 190px;
+    height: 254px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+    /* background: linear-gradient(293deg, rgb(185, 185, 255) 0%, rgb(72, 225, 255) 100%); */
+    background: linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));
+}
+
+
+
+body {
+    font-family: "Roboto Mono", monospace;
+    background-color: #ecf4d6;
+}
+
+/* Style for the buttons */
+.btn-custom {
+    background-color: #2d9596;
+    border: #2d9596;
+    font-family: "Roboto Mono", monospace;
+    font-size: large;
+    color: white;
+}
+
+.btn-custom:hover {
+    background-color: #265073;
+    border: #2d9596;
+    color: white;
+}
+
+#pagetitle {
+    text-align: center;
+    font-family: "Roboto Mono", monospace;
+    margin-top: 5%;
+}
+
+#pagetitle2 {
+    font-size: large;
+    text-align: center;
+    font-family: "Roboto Mono", monospace;
+}
+
+#jtext {
+    font-family: "Roboto Mono", monospace;
+}

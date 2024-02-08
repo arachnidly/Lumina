@@ -1,11 +1,11 @@
 from application.database import db
 from flask_security import UserMixin, RoleMixin
+from datetime import timedelta
 
 # create model for relationship between roles and users
 roles_users = db.Table('roles_users',
                        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
                        db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
-
 
 # create model for roles
 class Role(db.Model, RoleMixin):
@@ -16,7 +16,6 @@ class Role(db.Model, RoleMixin):
     description = db.Column(db.String(255))
 
 
-
 # create  model for user that stores the type of user in roles
 class User(db.Model, UserMixin):
     """Model for users. Each user can have multiple roles and book requests."""
@@ -24,24 +23,8 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
-    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('user', lazy='dynamic'))
+    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
     
-
-class BookRequest(db.Model):
-    """Model for tracking requests for books. Each request is associated with a user and a book, and has a date when it was requested."""
-    __tablename__ = 'book_request'
-
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
-    date_requested = db.Column(db.Date)
-
-    user = db.relationship('User', backref=db.backref('book_requests', lazy='dynamic'))
-    book = db.relationship('Book', backref=db.backref('book_requests', lazy='dynamic'))
-
-    def __repr__(self):
-        return f'<Request {self.id}>'
-
 
 
 # Association table for the many-to-many relationship between sections and books
@@ -80,16 +63,16 @@ class Author(db.Model):
         return f'<Author {self.name}>'
 
 class Book(db.Model):
-    """Model for books in the library. Each book can have multiple authors, be in multiple sections, and have multiple book requests."""
+    """Model for the books in the library. Each book can be written by multiple authors and belong to multiple sections."""
+    
     __tablename__ = 'book'
 
     id = db.Column(db.Integer, primary_key=True)
-
-    name = db.Column(db.String(255), nullable=False)
+    title = db.Column(db.String(255), nullable=False)
     content_url = db.Column(db.String, nullable=False)  # Assuming this is a URL to a PDF file
     description = db.Column(db.Text)
     date_published = db.Column(db.Date)
-    num_pages = db.Column(db.Integer)
+    bookcover_url = db.Column(db.String, nullable=False)
     avg_rating = db.Column(db.Float)
 
     # Establishing many-to-many relationship with authors
@@ -99,5 +82,41 @@ class Book(db.Model):
         return f'<Book {self.name}>'
 
 
+class BookRequest(db.Model):
+    """Model for book requests. Each request is made by a user and can be for one book."""
+    __tablename__ = 'book_request'
 
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
+    date_requested = db.Column(db.Date, default=db.func.current_date())
+    fulfilled = db.Column(db.Boolean, default=False)
+
+
+
+class BookReview(db.Model):
+    """Model for book ratings. Each rating is made by a user and can be for one book."""
+    __tablename__ = 'book_review'
+
+    id = db.Column(db.Integer, primary_key=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
+    rater = db.Column(db.String, db.ForeignKey('user.username'), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    date_rated = db.Column(db.Date, default=db.func.current_date())
+    comment = db.Column(db.Text)
+    def __repr__(self):
+        return f'<Rating {self.rating}>'
+    
+class BookLog(db.Model):
+    """Model for book logs. Each log is made by a user and can be for one book."""
+    __tablename__ = 'book_log'
+
+    id = db.Column(db.Integer, primary_key=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    date_borrowed = db.Column(db.Date, default=db.func.current_date())
+    date_returned = db.Column(db.Date, default=db.func.current_date() + timedelta(days=7))
+
+    def __repr__(self):
+        return f'<Log {self.date_borrowed}>'
 
