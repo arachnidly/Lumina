@@ -202,23 +202,25 @@ paths:
           description: Internal Server Error
         '404':
           description: Section not found
-    post:
-      description: Operation to create a section.
+    put:
+      description: Operation to update a section resource.
       tags:
         - 'Section'
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           multipart/form-data:
             schema:
               type: object
               properties:
-                Name:
+                New Section Name:
                   type: string
               required:
-                - Name
+                - New Section Name
       responses:
         '200':
-          description: Successfuly created
+          description: Successfuly updated
           content:
             application/json:
               schema:
@@ -230,8 +232,10 @@ paths:
                   name:
                     type: string
                     example: Fiction
-        '409':
-          description: Section already exists
+        '404':
+          description: Section not found
+        '401':
+          description: Unauthorized action
         '500':
           description: Internal Server Error
         '400':
@@ -245,5 +249,3 @@ paths:
                     type: string
                   error_message:
                     type: string
-
-  
