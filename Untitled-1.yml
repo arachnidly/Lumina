@@ -1,0 +1,249 @@
+openapi: '3.0.2'
+info:
+  title: Lumina Library API
+  # description: Lumina Library API
+  # db schema
+  version: '1.0'
+servers:
+  - url: http://localhost:8080
+    description: Local server
+paths:
+  /api/user/{username}:
+    description: End point to read, update and delete a user resource.
+    get:
+      description: Operation to read user resource.
+      tags:
+        - 'User'
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+            example: User
+      responses:
+        '200':
+          description: Request Successful.
+          content:
+            application/json:
+              schema:
+                title: user object
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  username:
+                    type: string
+                    example: User
+        '500':
+          description: Internal Server Error
+        '404':
+          description: User not found
+
+  /api/user:
+    description: End point to create a user resource.
+    put:
+      description: Operation to update a user resource.
+      tags:
+        - 'User'
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                New Username:
+                  type: string
+                New Password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Successfuly updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  username:
+                    type: string
+                    example: User
+        '404':
+          description: User not found
+        '401':
+          description: Unauthorized action
+        '500':
+          description: Internal Server Error
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                  error_message:
+                    type: string
+    delete:
+      description: Operation to delete a user resource.
+      tags:
+        - 'User'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successfuly deleted
+        '401':
+          description: Unauthorized action
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                  error_message:
+                    type: string
+
+    post:
+      description: Operation to create the user resource.
+      tags:
+        - 'User'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Username:
+                  type: string
+                Password:
+                  type: string
+                  format: password
+              required:
+                - Username
+                - Password
+                
+      responses:
+        '200':
+          description: Successfuly updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  username:
+                    type: string
+                    example: User
+        '409':
+          description: username already exists
+        '500':
+          description: Internal Server Error
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                  error_message:
+                    type: string
+
+#API def for the section resource for sections in the book catalog which books can be in
+  /api/section/{section_id}:
+    description: End point to read, update and delete a section resource.
+    get:
+      description: Operation to read/view section resource.
+      tags:
+        - 'Section'
+      parameters:
+        - in: path
+          name: section_id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Request Successful.
+          content:
+            application/json:
+              schema:
+                title: section object
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    name:
+                      type: string
+                      example: Fiction
+        '500':
+          description: Internal Server Error
+        '404':
+          description: Section not found
+    post:
+      description: Operation to create a section.
+      tags:
+        - 'Section'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Name:
+                  type: string
+              required:
+                - Name
+      responses:
+        '200':
+          description: Successfuly created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: Fiction
+        '409':
+          description: Section already exists
+        '500':
+          description: Internal Server Error
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                  error_message:
+                    type: string
+
+  

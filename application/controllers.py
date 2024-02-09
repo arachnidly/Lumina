@@ -122,13 +122,28 @@ def search():
             # books = Book.query.filter(Book.title.ilike(f'%{search_term}%')).all()
             # return render_template('search.html', title='Search', books=books)
             return render_template('search.html', title='Search', user=session['user'], role=session['user_role'], search_term=search_term)
-
     else:
         return redirect("/")
-
-
+    
 # manage
 @app.route("/manage")
 def manage():
     return render_template('managecatalog.html', title='Manage Catalog')
+
+# add section
+@app.route("/manage/section/add", methods=['GET', 'POST'])
+def add_section():
+    if "user" in session and session['user_role'] == 'admin':
+        if request.method == 'GET':
+            return render_template('addsection.html', title='Add Section', user=session['user'], role=session['user_role'])
+        if request.method == 'POST':
+            section_name = request.form['section_name']
+            description = request.form['description']
+            section = Section(name=section_name, description=description)
+            db.session.add(section)
+            db.session.commit()
+            return redirect("/manage")
+    else:
+        return redirect("/")
+
 
