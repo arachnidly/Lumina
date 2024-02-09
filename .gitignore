@@ -1,6 +1,11 @@
-env/
-templates4l8r/
+
 project_reqs/
-appv1.py
+
 Project-Report.md
 static/Books
+instance/dummy.sqlite3
+instance/dummy copy.sqlite3
+instance/dummy copy 2.sqlite3
+
+
+```

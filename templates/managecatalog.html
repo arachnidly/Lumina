@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumina - {{title}}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Ephesis&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <!-- Navbar brand -->
+
+            <a class="navbar-brand" href="/">Lumina</a>
+
+            <!-- Navbar toggle button -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navbar items -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" id="jtext" href="/home">Librarian Dashboard</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" id="jtext" href="/search">Search</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" id="jtext" href="/manage">Manage Catalog</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" id="jtext" href="/">Manage Users</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" id="jtext" href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- End of Navbar -->
+
+    <!-- Main content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="text-center mt-5">Section Management</h2>
+            </div>
+        </div>
+        <div class="row justify-content-center" style="margin-top: 2%;">
+            <!-- <div class="card-deck"> -->
+            <!-- first col -->
+            <div class="col-md-4">
+                <div class="card" id="sectioncard">
+                    <div class="card-body">
+                        <h5 class="card-title">Create Section</h5>
+                        <p class="card-text">Click here to add a new section to the library catalog</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="manage/add/section" class="btn btn-custom stretched-link">Add Section</a>
+                    </div>
+                </div>
+            </div>
+
+        
+            <!-- second column -->
+
+            <!-- <div class="col-md-4">
+                <div class="card" id="sectioncard">
+                    <div class="card-body">
+                        <h5 class="card-title">{{section}}</h5>
+                        <p class="card-text">{{description}}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="manage/view/section" class="btn btn-md btn-custom">View</a>
+                        <a href="manage/edit/section" class="btn btn-md btn-custom">Edit</a>
+                        <a href="manage/delete/section" class="btn btn-md btn-custom">Delete</a>
+                    </div>
+                </div>
+            </div> -->
+            <!-- third column -->
+
+            
+            <!-- end of card deck and row -->
+            <!-- </div> -->
+        </div>
+
+
+
+
+
+
+        <!-- End of main content -->
+
+        <!-- Bootstrap JS and dependencies -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <!-- End -->
+</body>
+
+</html>

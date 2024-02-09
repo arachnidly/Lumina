@@ -24,7 +24,9 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(30), nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
-    
+    books_requested = db.relationship('Book', secondary='book_request')
+    books_borrowed = db.relationship('Book', secondary='book_log')
+
 
 
 # Association table for the many-to-many relationship between sections and books
@@ -71,9 +73,12 @@ class Book(db.Model):
     title = db.Column(db.String(255), nullable=False)
     content_url = db.Column(db.String, nullable=False)  # Assuming this is a URL to a PDF file
     description = db.Column(db.Text)
-    date_published = db.Column(db.Date)
     bookcover_url = db.Column(db.String, nullable=False)
     avg_rating = db.Column(db.Float)
+
+    # requested_by = db.relationship('User', secondary='book_request')
+
+    is_borrowed = db.Column(db.Boolean, default=False)
 
     # Establishing many-to-many relationship with authors
     authors = db.relationship('Author', secondary=author_book, backref=db.backref('books', lazy='dynamic'))
@@ -104,8 +109,7 @@ class BookReview(db.Model):
     rating = db.Column(db.Integer, nullable=False)
     date_rated = db.Column(db.Date, default=db.func.current_date())
     comment = db.Column(db.Text)
-    def __repr__(self):
-        return f'<Rating {self.rating}>'
+
     
 class BookLog(db.Model):
     """Model for book logs. Each log is made by a user and can be for one book."""
@@ -115,8 +119,7 @@ class BookLog(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     date_borrowed = db.Column(db.Date, default=db.func.current_date())
-    date_returned = db.Column(db.Date, default=db.func.current_date() + timedelta(days=7))
-
-    def __repr__(self):
-        return f'<Log {self.date_borrowed}>'
-
+    # set default return date to 7 days from date borrowed and update to actual return date if returned early
+    return_date = db.Column(db.Date, default=db.func.current_date() + timedelta(days=7))
+    # actual_return_date = db.Column(db.Date)
+    returned = db.Column(db.Boolean, default=False)

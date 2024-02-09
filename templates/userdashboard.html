@@ -18,9 +18,7 @@
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
             <!-- Navbar brand -->
-
             <a class="navbar-brand" href="/">Lumina</a>
-
             <!-- Navbar toggle button -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,15 +50,107 @@
     <!-- Navbar end -->
 
     <!-- Main content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h4 class="text-center mt-3">Currently reading</h4>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="card-deck">
+                {# {% for book in books %} #}
 
-    
+                <div class="card">
+                    <div class="card-body" id="bookcover">
+                        <h5 class="card-title" id="bookcardtitle">Book Title</h5>
+                        <p class="card-subtitle">Author</p>
+                    </div>
+                    <div class="card-footer">
+                        <p style="margin-bottom: 0px;">Issued: </p>
+                        <p style="margin-top: 0px;">Due: </p>
+                    </div>
+                </div>
 
-   
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudfßlare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+                <div class="card">
+                    <div class="card-body" id="bookcover">
+                        <h5 class="card-title" id="bookcardtitle">Book Title</h5>
+                        <p class="card-subtitle">Author</p>
+                    </div>
+                    <div class="card-footer">
+                        <p style="margin-bottom: 0px;">Issued: </p>
+                        <p style="margin-top: 0px;">Due: </p>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h4 class="text-center mt-3">Books requested</h4>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+
+            <div class="card-deck">
+                {# {% for book in books %} #}
+                <div class="card">
+                    <div class="card-body" id="bookcover">
+                        <h5 class="card-title" id="bookcardtitle">Book Title</h5>
+                        <p class="card-subtitle">Author</p>
+                    </div>
+                    <div class="card-footer">
+                        <p style="margin-bottom: 0px;">Requested: </p>
+                        <p style="margin-top: 0px;">Status: </p>
+                    </div>
+                </div>
+
+                <div class="card">
+
+                    <div class="card-body" id="bookcover">
+                        <h5 class="card-title" id="bookcardtitle">Book Title</h5>
+                        <p class="card-subtitle">Author</p>
+                    </div>
+                    <div class="card-footer">
+                        <p style="margin-top: 0px;">Status: </p>
+                        <p style="margin-bottom: 0px;">Requested: </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-12">
+                <h4 class="text-center mt-3">Previously read</h4>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="card-deck">
+                {# {% for book in books %} #}
+                <div class="card">
+
+                    <div class="card-body" id="bookcover">
+                        <h5 class="card-title" id="bookcardtitle">Book Title</h5>
+                        <p class="card-subtitle">Author</p>
+                    </div>
+                    <div class="card-footer">
+                        <p style="margin-bottom: 0px;">Your rating: </p>
+                        <p style="margin-top: 0px;">Returned:</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content end -->
+
+        <!-- Bootstrap JS and dependencies -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudfßlare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 
 </html>

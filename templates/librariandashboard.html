@@ -11,6 +11,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Ephesis&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        table {
+            /* border-top: 1px solid lightgray; */
+            border-bottom: 1px solid lightgray;
+        }
+
+    
+    </style>
 </head>
 
 <body>
@@ -37,7 +45,7 @@
                         <a class="nav-link" id="jtext" href="/search">Search</a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link" id="jtext" href="#">Manage Catalog</a>
+                        <a class="nav-link" id="jtext" href="/manage">Manage Catalog</a>
                     </li>
                     <li class="nav-item ">
                         <a class="nav-link" id="jtext" href="#">Manage Users</a>
@@ -53,41 +61,94 @@
 
     <!-- Main content -->
     <div class="container">
-        <div style="margin-top: 2%;">
-            <h4>User Requests</h4>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Username</th>
-                        <th scope="col">Book Requested</th>
-                        <th scope="col">Book </th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {# {% for user in users %} #}
-                    <tr>
-                        <th scope="row">{{user.username}}</th>
-                        <td>{{request.book}}</td>
-                        <td>{{user.email}}</td>
-                        <td>
-                            <a href="/approve/{{user.id}}">Approve</a>
-                            <br>
-                            <a href="/reject/{{user.id}}">Reject</a>
-                        </td>
-                    </tr>
-                    {# {% endfor %} #}
-                </tbody>
+    <!-- Book Requests table -->
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-center mt-5">Book Requests</h3>
+            </div>
         </div>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover mt-3" style="text-align: center;">
+                    <thead>
+                        <tr>
+                            <th scope="col">Book Title</th>
+                            <th scope="col">Requested by</th>
+                            <th scope="col">Requested on</th>
+                            <th scope="col">Book Status</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {# {} #}
+                        <tr>
+                            <td>{{book_title}}</td>
+                            <td>{{username}}</td>
+                            <td>{{requested_on}}</td>
+                            <td>{{status}}</td>
+                            <td>
+                                <a href="/issue/{{username}}{{book_id}}" class="btn-sm btn-custom">Approve</a>
+                                <a href="/reserve/{{book_id}}" class="btn-sm btn-custom">Reserve</a>
+                                <a href="/reject/{{book_id}}" class="btn-sm btn-custom">Reject</a>
+                            </td>
+                        </tr>
+
+                        {# {{/requests}} #}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <!-- End of Book Requests table -->
+
+    <!-- Currently Issued Books table -->
+
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-center mt-5">Currently Issued Books</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover mt-3" style="text-align: center;">
+                    <thead>
+                        <tr>
+                            <th scope="col">Book Title</th>
+                            <th scope="col">Issued to</th>
+                            <th scope="col">Issued on</th>
+                            <th scope="col">Return by</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {# {} #}
+                        <tr>
+                            <td>{{book_title}}</td>
+                            <td>{{username}}</td>
+                            <td>{{issued_on}}</td>
+                            <td>{{return_by}}</td>
+                            <td>
+                                <a href="/extend/{{book_id}}" class="btn-sm btn-custom">Extend</a>
+                                <a href="/return/{{book_id}}" class="btn-sm btn-custom">Return</a>
+                            </td>
+                        </tr>
+
+                        {# {{/issued}} #}
+                    </tbody>
+                </table>
+            </div>
+            <!-- div closing col 12 -->
+
+        </div>
+    <!-- End of Currently Issued Books table and row-->
+
     </div>
+        <!-- End of main content inside container -->
 
-    <!-- End of main content -->
-
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <!-- End -->
+        <!-- Bootstrap JS and dependencies -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <!-- End -->
 </body>
 
 </html>

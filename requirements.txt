@@ -3,6 +3,7 @@ blinker
 click
 Flask
 Flask-RESTful
+Flask-Security-Too
 Flask-SQLAlchemy
 itsdangerous
 Jinja2

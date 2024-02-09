@@ -19,7 +19,41 @@
     height: 254px;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
     /* background: linear-gradient(293deg, rgb(185, 185, 255) 0%, rgb(72, 225, 255) 100%); */
+}
+
+/* .card-body {
+    /* width: 190px;
+    height: 254px; 
     background: linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));
+    text-align: center;
+} */
+
+#bookcover {
+    text-align: center;
+    background: linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));
+    text-align: center;
+}
+
+#bookcoverpic {
+    opacity: 0.3;
+}
+
+#bookcardtitle {
+    font-family: "Roboto Mono", monospace;
+    font-size: 150%;
+    margin-top: 30%;
+}
+
+#sectioncard {
+    height: auto;
+    width: auto;
+    text-align: center;
+}
+
+#sectioncardtitle {
+    /* font-family: "Roboto Mono", monospace; */
+    font-size: 120%;
+    /* margin-top: 50%; */
 }
 
 
@@ -34,7 +68,6 @@ body {
     background-color: #2d9596;
     border: #2d9596;
     font-family: "Roboto Mono", monospace;
-    font-size: large;
     color: white;
 }
 

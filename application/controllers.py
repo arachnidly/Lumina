@@ -1,9 +1,8 @@
 from flask import request, render_template, redirect, url_for, session
-from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
+from flask_security import Security, UserMixin, RoleMixin, login_required, roles_required
 from flask import current_app as app
 from application.models import *
 from application.config import *
-
 
 # home page
 @app.route('/', methods=['GET', 'POST'])
@@ -12,6 +11,7 @@ def home():
     # if user isn't logged in, redirect to welcome page with login button
     if "user" in session:
         role = session['user_role']
+        # return redirect("/user=" + session["user"])
         if role == 'admin':
             return render_template('librariandashboard.html', title='Librarian Dashboard', role=role, user=session['user'])
         else:
@@ -90,7 +90,18 @@ def signup():
             session['user_role'] = user.roles[0].name
             return redirect("/")
 
-
+# user dashboard
+@app.route("/user=<username>", methods=['GET', 'POST'])
+def user_home(username):
+    if "user" in session and session['user'] == username:
+        user = User.query.filter_by(username=username).first()
+        
+        if request.method == 'GET':
+            return render_template('userdashboard.html', title='Dashboard', user=session['user'], role=session['user_role'])
+        if request.method == 'POST':
+            return redirect("/")
+    else:
+        return redirect("/")
 
 # logout
 @app.route('/logout', methods = ["GET"])
@@ -113,5 +124,11 @@ def search():
             return render_template('search.html', title='Search', user=session['user'], role=session['user_role'], search_term=search_term)
 
     else:
-        return redirect("/login")
-    
+        return redirect("/")
+
+
+# manage
+@app.route("/manage")
+def manage():
+    return render_template('managecatalog.html', title='Manage Catalog')
+
