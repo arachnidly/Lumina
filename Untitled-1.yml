@@ -1,8 +1,8 @@
 openapi: '3.0.2'
 info:
   title: Lumina Library API
-  # description: Lumina Library API
-  # db schema
+  description: >
+    
   version: '1.0'
 servers:
   - url: http://localhost:8080
@@ -171,7 +171,7 @@ paths:
 
   
   /api/section/{section_id}:
-    description: End point to read, update and delete a section resource.
+    description: End point to read, update and delete the section resource.
     get:
       description: Operation to read/view section resource.
       tags:
@@ -205,22 +205,31 @@ paths:
         '404':
           description: Section not found
     put:
-      description: Operation to update a section resource.
+      description: Operation to update the section resource.
       tags:
         - 'Section'
       security:
         - bearerAuth: []
+      parameters:
+        - in: path
+          name: section_id
+          required: true
+          schema:
+            type: integer
+            example: 1
       requestBody:
         content:
           multipart/form-data:
             schema:
               type: object
               properties:
-                New Section Name:
+                Name:
                   type: string
-              required:
-                - New Section Name
-              
+                Description:
+                  type: string
+            example:
+              Name: Fiction
+              Description: A section for fiction books            
       responses:
         '200':
           description: Successfuly updated
@@ -229,12 +238,12 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
-                    type: integer
-                    example: 1
-                  name:
+                  Name:
                     type: string
                     example: Fiction
+                  Description:
+                    type: string
+                    example: A section for fiction books
         '404':
           description: Section not found
         '401':
@@ -347,3 +356,31 @@ paths:
                     type: string
                   error_message:
                     type: string
+    delete:
+      description: Operation to delete the section resource.
+      tags:
+        - 'Section'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successfuly deleted
+        '401':
+          description: Unauthorized action
+        '404':
+          description: Section not found
+        '500':
+          description: Internal Server Error
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                  error_message:
+                    type: string
+    post:
+      

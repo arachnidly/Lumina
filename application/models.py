@@ -25,7 +25,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String, nullable=False)
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
     books_requested = db.relationship('Book', secondary='book_request')
-    books_borrowed = db.relationship('Book', secondary='book_log')
+    books_borrowed = db.relationship('Book', secondary='book_loan')
 
 
 # Association table for the many-to-many relationship between sections and books
