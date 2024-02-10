@@ -28,7 +28,6 @@ class User(db.Model, UserMixin):
     books_borrowed = db.relationship('Book', secondary='book_log')
 
 
-
 # Association table for the many-to-many relationship between sections and books
 sections_books = db.Table('sections_books',
                           db.Column('section_id', db.Integer(), db.ForeignKey('section.id')),
@@ -42,6 +41,16 @@ class Section(db.Model):
     name = db.Column(db.String(255), nullable=False)
     date_created = db.Column(db.Date, default=db.func.current_date())
     description = db.Column(db.Text)
+    avg_rating = db.Column(db.Float)
+
+    def calculate_average_rating(self):
+            # total_ratings is the numerical sum of all the avg rating of every book in the section.            
+            total_ratings = sum(book.avg_rating for book in self.books if book.avg_rating is not None) 
+            num_books = len([book for book in self.books if book.avg_rating is not None])
+            if num_books > 0:
+                self.avg_rating = total_ratings / num_books
+            else:
+                self.avg_rating = None
 
     # Establishing many-to-many relationship with books
     books = db.relationship('Book', secondary=sections_books, backref=db.backref('sections', lazy='dynamic'))
@@ -65,20 +74,29 @@ class Author(db.Model):
         return f'<Author {self.name}>'
 
 class Book(db.Model):
+
     """Model for the books in the library. Each book can be written by multiple authors and belong to multiple sections."""
     
     __tablename__ = 'book'
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
-    content_url = db.Column(db.String, nullable=False)  # Assuming this is a URL to a PDF file
+    content_link = db.Column(db.String, nullable=False)  # Assuming this is a URL to a PDF file
     description = db.Column(db.Text)
-    bookcover_url = db.Column(db.String, nullable=False)
-    avg_rating = db.Column(db.Float)
-
-    # requested_by = db.relationship('User', secondary='book_request')
+    bookcover_link = db.Column(db.String, nullable=False)
 
     is_borrowed = db.Column(db.Boolean, default=False)
+    # Additional attribute for average rating
+    avg_rating = db.Column(db.Float)
+
+    # Method to calculate average rating
+    def calculate_average_rating(self):
+        total_ratings = sum(feedback.rating for feedback in self.book_feedback)
+        num_ratings = len(self.book_feedback)
+        if num_ratings > 0:
+            self.avg_rating = total_ratings / num_ratings
+        else:
+            self.avg_rating = None
 
     # Establishing many-to-many relationship with authors
     authors = db.relationship('Author', secondary=author_book, backref=db.backref('books', lazy='dynamic'))
@@ -98,28 +116,35 @@ class BookRequest(db.Model):
     fulfilled = db.Column(db.Boolean, default=False)
 
 
-
-class BookReview(db.Model):
-    """Model for book ratings. Each rating is made by a user and can be for one book."""
-    __tablename__ = 'book_review'
+class BookFeedback(db.Model):
+    """Model for book feedback provided by users."""
+    __tablename__ = 'book_feedback'
 
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
-    rater = db.Column(db.String, db.ForeignKey('user.username'), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
-    date_rated = db.Column(db.Date, default=db.func.current_date())
     comment = db.Column(db.Text)
+    date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
 
-    
-class BookLog(db.Model):
-    """Model for book logs. Each log is made by a user and can be for one book."""
-    __tablename__ = 'book_log'
+    # Define relationship with User and Book
+    user = db.relationship('User', backref=db.backref('book_feedback', lazy='dynamic'))
+    book = db.relationship('Book', backref=db.backref('book_feedback', lazy='dynamic'))
+
+
+class BookLoan(db.Model):
+    """Model for book loans. Each loan represents a book borrowed by a user."""
+    __tablename__ = 'book_loan'
 
     id = db.Column(db.Integer, primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
     date_borrowed = db.Column(db.Date, default=db.func.current_date())
-    # set default return date to 7 days from date borrowed and update to actual return date if returned early
     return_date = db.Column(db.Date, default=db.func.current_date() + timedelta(days=7))
-    # actual_return_date = db.Column(db.Date)
     returned = db.Column(db.Boolean, default=False)
+
+    # Define the relationship with User and Book
+    user = db.relationship('User', backref=db.backref('book_loans', lazy='dynamic'))
+    book = db.relationship('Book', backref=db.backref('book_loans', lazy='dynamic'))
+

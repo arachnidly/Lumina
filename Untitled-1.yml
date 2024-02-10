@@ -46,8 +46,8 @@ paths:
     put:
       description: Operation to update a user resource.
       tags:
-        - 'User'
-      security:
+        - 'Users'
+      security:  
         - bearerAuth: []
       requestBody:
         content:
@@ -73,7 +73,7 @@ paths:
                     example: 1
                   username:
                     type: string
-                    example: User
+                    example: user
         '404':
           description: User not found
         '401':
@@ -150,7 +150,7 @@ paths:
                     example: 1
                   username:
                     type: string
-                    example: User
+                    example: user
         '409':
           description: username already exists
         '500':
@@ -168,52 +168,7 @@ paths:
                     type: string
 
 #API def for the section resource for sections in the book catalog which books can be in
-  /api/section:
-    description: End point to create a section resource.
-    post:
-      description: Operation to create the section resource.
-      tags:
-        - 'Sections'
-      summary: Create a new section
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                Section Name:
-                  type: string
-              required:
-                - Section Name
-      responses:
-        '200':
-          description: Successfuly updated
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    example: 1
-                  name:
-                    type: string
-                    example: Fiction
-        '409':
-          description: Section already exists
-        '500':
-          description: Internal Server Error
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                  error_message:
-                    type: string
+
   
   /api/section/{section_id}:
     description: End point to read, update and delete a section resource.
@@ -284,6 +239,101 @@ paths:
           description: Section not found
         '401':
           description: Unauthorized action
+        '500':
+          description: Internal Server Error
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                  error_message:
+                    type: string
+
+  /api/section:
+    description: End point to create a section resource.
+    put:
+      description: Operation to update a section resource.
+      tags:
+        - 'Section'
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                New Section Name:
+                  type: string
+              required:
+                - New Section Name
+      responses:
+        '200':
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: Fiction
+        '404':
+          description: Section not found
+        '401':
+          description: Unauthorized action
+        '500':
+          description: Internal Server Error
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                  error_message:
+                    type: string
+                
+    post:
+      description: Operation to create the section resource.
+      tags:
+        - 'Sections'
+      summary: Create a new section
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Section Name:
+                  type: string
+              required:
+                - Section Name
+      responses:
+        '200':
+          description: Successfuly updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: Fiction
+        '409':
+          description: Section already exists
         '500':
           description: Internal Server Error
         '400':
