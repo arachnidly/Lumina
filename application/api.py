@@ -94,3 +94,4 @@ class SectionAPI(Resource):
         db.session.add(section)
         db.session.commit()
         return section, 201
+    

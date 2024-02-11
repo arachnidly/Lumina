@@ -128,22 +128,24 @@ def search():
 # manage
 @app.route("/manage")
 def manage():
-    return render_template('managecatalog.html', title='Manage Catalog')
-
-# add section
-@app.route("/manage/section/add", methods=['GET', 'POST'])
-def add_section():
     if "user" in session and session['user_role'] == 'admin':
         if request.method == 'GET':
-            return render_template('addsection.html', title='Add Section', user=session['user'], role=session['user_role'])
-        if request.method == 'POST':
-            section_name = request.form['section_name']
-            description = request.form['description']
-            section = Section(name=section_name, description=description)
-            db.session.add(section)
-            db.session.commit()
-            return redirect("/manage")
+            # get all sections
+            sections = Section.query.all()
+            
+            return render_template('manage.html', title='Manage', user=session['user'], role=session['user_role'])
+        else:
+            redirect("/manage/")
     else:
         return redirect("/")
 
+
+# add section
+@app.route("/addsection", methods=['GET', 'POST'])
+def add_section():
+    if request.method == 'GET':
+        if "user" in session and session['user_role'] == 'admin':
+                # sections = Section.query.all()
+                return render_template('addsection.html', title='Add Section', user='athena', role='admin', sections=sections) 
+        return redirect("/")
 

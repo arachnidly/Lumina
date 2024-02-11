@@ -44,13 +44,13 @@ class Section(db.Model):
     avg_rating = db.Column(db.Float)
 
     def calculate_average_rating(self):
-            # total_ratings is the numerical sum of all the avg rating of every book in the section.            
-            total_ratings = sum(book.avg_rating for book in self.books if book.avg_rating is not None) 
-            num_books = len([book for book in self.books if book.avg_rating is not None])
-            if num_books > 0:
-                self.avg_rating = total_ratings / num_books
-            else:
-                self.avg_rating = None
+        # total_ratings is the numerical sum of all the avg rating of every book in the section.            
+        total_ratings = sum(book.avg_rating for book in self.books if book.avg_rating is not None) 
+        num_books = len([book for book in self.books if book.avg_rating is not None])
+        if num_books > 0:
+            self.avg_rating = total_ratings / num_books
+        else:
+            self.avg_rating = None
 
     # Establishing many-to-many relationship with books
     books = db.relationship('Book', secondary=sections_books, backref=db.backref('sections', lazy='dynamic'))
@@ -147,4 +147,6 @@ class BookLoan(db.Model):
     # Define the relationship with User and Book
     user = db.relationship('User', backref=db.backref('book_loans', lazy='dynamic'))
     book = db.relationship('Book', backref=db.backref('book_loans', lazy='dynamic'))
+
+
 

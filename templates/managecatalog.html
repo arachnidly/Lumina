@@ -58,21 +58,96 @@
                 <h2 class="text-center mt-5">Section Management</h2>
             </div>
         </div>
+         {# section management heading #}
         <div class="row justify-content-center" style="margin-top: 2%;">
-            <!-- <div class="card-deck"> -->
-            <!-- first col -->
+            <a>
+                <div class="col-md-4">
+                    <div class="card" id="sectioncard" style="padding: 10px;">
+                        <div class="card-body">
+                            <h5 class="card-title">Create Section</h5>
+                            <p class="card-text">Click here to add a new section to the library catalog</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="manage/add/section" class="btn btn-custom stretched-link">Add Section</a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="row justify-content-center" style="margin-top: 2%;">
+        <a>
             <div class="col-md-4">
                 <div class="card" id="sectioncard">
                     <div class="card-body">
                         <h5 class="card-title">Create Section</h5>
-                        <p class="card-text">Click here to add a new section to the library catalog</p>
+                        <p class="card-text">sClick here to add a new section to the library catalog</p>
                     </div>
                     <div class="card-footer">
                         <a href="manage/add/section" class="btn btn-custom stretched-link">Add Section</a>
                     </div>
                 </div>
             </div>
+        </a>
 
+
+<!-- second column -->
+
+<!-- <div class="col-md-4">
+    <div class="card" id="sectioncard">
+        <div class="card-body">
+            <h5 class="card-title">{{section}}</h5>
+            <p class="card-text">{{description}}</p>
+        </div>
+        <div class="card-footer">
+            <a href="manage/view/section" class="btn btn-md btn-custom">View</a>
+            <a href="manage/edit/section" class="btn btn-md btn-custom">Edit</a>
+            <a href="manage/delete/section" class="btn btn-md btn-custom">Delete</a>
+        </div>
+    </div>
+</div> -->
+<!-- third column -->
+
+
+<!-- end of card deck and row -->
+<!-- </div> -->
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="createSectionModal" tabindex="-1" role="dialog" aria-labelledby="createSectionModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createSectionModalLabel">Create Section</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/manage/add/section" method="POST">
+                    <!-- Add your form fields here -->
+                    <div class="form-group">
+                        <label for="sectionName">Section Name</label>
+                        <input type="text" class="form-control" id="sectionName" name="sectionName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sectionDescription">Section Description</label>
+                        <textarea class="form-control" id="sectionDescription" name="sectionDescription" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Open the modal when the "Add Section" button is clicked
+    document.querySelector('#sectioncard a').addEventListener('click', function () {
+        $('#createSectionModal').modal('show');
+    });
+</script>
         
             <!-- second column -->
 
@@ -95,6 +170,7 @@
             <!-- end of card deck and row -->
             <!-- </div> -->
         </div>
+
 
 
 

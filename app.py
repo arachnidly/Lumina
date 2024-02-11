@@ -38,6 +38,7 @@ from application.api import UserAPI
 # api.add_resource(UserAPI, "/api/user/<username>", "/api/user")
 api.add_resource(UserAPI, "/api/user", "/api/user/<string:username>")
 
+#
 
 # app run   
 if __name__ == "__main__":
