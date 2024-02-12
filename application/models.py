@@ -85,7 +85,8 @@ class Book(db.Model):
     description = db.Column(db.Text)
     bookcover_link = db.Column(db.String, nullable=False)
 
-    is_borrowed = db.Column(db.Boolean, default=False)
+    # Remove the is_borrowed field from the Book model since book availability will be determined by the presence of a loan record in the BookLoan table.
+    # is_borrowed = db.Column(db.Boolean, default=False)
     # Additional attribute for average rating
     avg_rating = db.Column(db.Float)
 

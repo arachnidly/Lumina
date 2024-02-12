@@ -133,7 +133,7 @@ def manage():
             # get all sections
             sections = Section.query.all()
             
-            return render_template('manage.html', title='Manage', user=session['user'], role=session['user_role'])
+            return render_template('managecatalog.html', title='Manage', user=session['user'], role=session['user_role'], sections=sections)
         else:
             redirect("/manage/")
     else:
@@ -141,11 +141,24 @@ def manage():
 
 
 # add section
-@app.route("/addsection", methods=['GET', 'POST'])
+@app.route("/manage/add/section", methods=['POST'])
+#@login_required
+#@roles_required('admin')  # Ensure only admins can access this route
 def add_section():
-    if request.method == 'GET':
-        if "user" in session and session['user_role'] == 'admin':
-                # sections = Section.query.all()
-                return render_template('addsection.html', title='Add Section', user='athena', role='admin', sections=sections) 
+    if "user" in session and session['user_role'] == 'admin':
+        section_name = request.form.get('sectionName')
+        section_description = request.form.get('sectionDescription')
+        if section_name:  # Basic validation to check if the section name is provided
+            new_section = Section(name=section_name, description=section_description)
+            db.session.add(new_section)
+            db.session.commit()
+            # Redirect back to the manage catalog page with a success message
+            return redirect(url_for('manage', success='Section added successfully!'))
+        else:
+            # Redirect back with an error message if the section name is not provided
+            return redirect(url_for('manage', error='Section name is required!'))
+    else:
         return redirect("/")
+    
+
 
