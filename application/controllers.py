@@ -1,5 +1,5 @@
 from flask import request, render_template, redirect, url_for, session
-from flask_security import Security, UserMixin, RoleMixin, login_required, roles_required
+# from flask_security import Security, UserMixin, RoleMixin, login_required, roles_required
 from flask import current_app as app
 from application.models import *
 from application.config import *
@@ -129,36 +129,61 @@ def search():
 @app.route("/manage")
 def manage():
     if "user" in session and session['user_role'] == 'admin':
-        if request.method == 'GET':
-            # get all sections
-            sections = Section.query.all()
-            
-            return render_template('managecatalog.html', title='Manage', user=session['user'], role=session['user_role'], sections=sections)
-        else:
-            redirect("/manage/")
+        sections = Section.query.all()
+        return render_template('manage.html', title='Manage Catalog', user=session['user'], role=session['user_role'], sections=sections)
     else:
         return redirect("/")
 
 
 # add section
-@app.route("/manage/add/section", methods=['POST'])
-#@login_required
-#@roles_required('admin')  # Ensure only admins can access this route
+@app.route("/section/add", methods=['GET','POST'])
 def add_section():
     if "user" in session and session['user_role'] == 'admin':
-        section_name = request.form.get('sectionName')
-        section_description = request.form.get('sectionDescription')
-        if section_name:  # Basic validation to check if the section name is provided
-            new_section = Section(name=section_name, description=section_description)
-            db.session.add(new_section)
-            db.session.commit()
-            # Redirect back to the manage catalog page with a success message
-            return redirect(url_for('manage', success='Section added successfully!'))
-        else:
-            # Redirect back with an error message if the section name is not provided
-            return redirect(url_for('manage', error='Section name is required!'))
+        if request.method == 'GET':
+            sections = Section.query.all()
+            return render_template('add.html', title='Add Section', user=session['user'], role=session['user_role'])
+        if request.method == 'POST':
+            section_title = request.form.get('sectionTitle').title()
+            section_description = request.form.get('sectionDescription')
+            if section_title:  # Basic validation to check if the section title is provided in the form
+                existing_section = Section.query.filter_by(title=section_title).first()
+                if existing_section:
+                    return render_template('add.html', section_title_error=True, title='Add Section', user=session['user'], role=session['user_role'], section=existing_section)
+                else:
+                    new_section = Section(title=section_title, description=section_description)
+                    db.session.add(new_section)
+                    db.session.commit()
+                    # Redirect back to the manage catalog page with a success message
+                    sections = Section.query.all()
+                    return redirect(url_for('manage', success='Section added successfully!'))
+            else:
+                # Redirect back with an error message if the section name is not provided
+                return redirect(url_for('manage', error='Section name is required!'))
     else:
         return redirect("/")
     
 
-
+# add book
+@app.route("/book/add", methods=['GET','POST'])
+def add_book():
+    if "user" in session and session['user_role'] == 'admin':
+        if request.method == 'GET':
+            sections = Section.query.all()
+            books = Book.query.all()
+            return render_template('addbook.html', title='Add Book', user=session['user'], role=session['user_role'], sections=sections, books=books)
+        if request.method == 'POST':
+            book_title = request.form.get('bookTitle').title()
+            book_author = request.form.get('bookAuthor').title()
+            book_description = request.form.get('bookDescription')
+            book_section = request.form.get('bookSection')
+            if book_title and book_author and book_section:
+                existing_book = Book.query.filter_by(title=book_title).first()
+                if existing_book:
+                    return render_template('addbook.html', book_title_error=True, title='Add Book', user=session['user'], role=session['user_role'], book=existing_book)
+                else:
+                    new_book = Book(title=book_title, author=book_author, description=book_description)
+                    section = Section.query.filter_by(title=book_section).first()
+                    section.books.append(new_book)
+                    db.session.add(new_book)
+                    db.session.commit()
+                    return redirect(url_for('manage', success='Book added successfully!'))

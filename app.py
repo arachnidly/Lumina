@@ -3,7 +3,7 @@ from application.database import db
 from flask_restful import Api
 from application.models import *
 from application.config import UPLOAD_FOLDER, KEY, DB
-from flask_security import UserMixin, RoleMixin, login_required, Security, SQLAlchemyUserDatastore, roles_required
+# from flask_security import UserMixin, RoleMixin, login_required, Security, SQLAlchemyUserDatastore, roles_required
 
 
 # create app instance

@@ -14,12 +14,50 @@
     margin-left: 15px;
 }
 
-.card {
+.container-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh; /* Use the full height of the viewport */
+    text-align: center;
+}
+
+.container.d-flex {
+    height: 80vh; /* Adjusted as per your change */
+}
+
+.custom-card {
+    max-width: 250px; /* Or whatever maximum width you prefer */
+    margin: 0 auto; /* This centers the card in the column */
+    /* max-height: fit-content; */
+}
+
+.card-header {
+    height: 45px;
+}
+
+.card-footer {
+    height: 45px;
+    padding: 5px;
+
+}
+
+/* Horizontal scroll for cards */
+.d-flex.flex-row.flex-nowrap.overflow-auto {
+    -webkit-overflow-scrolling: touch;
+}
+
+.card.mx-2 {
+    flex: 0 0 auto; /* Prevent flex items from growing or shrinking */
+}
+
+
+/* #bookcard {
     width: 190px;
     height: 254px;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
-    /* background: linear-gradient(293deg, rgb(185, 185, 255) 0%, rgb(72, 225, 255) 100%); */
-}
+    background: linear-gradient(293deg, rgb(185, 185, 255) 0%, rgb(72, 225, 255) 100%);
+} */
 
 /* .card-body {
     /* width: 190px;
@@ -28,7 +66,7 @@
     text-align: center;
 } */
 
-#bookcover {
+/* #bookcover {
     text-align: center;
     background: linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));
     text-align: center;
@@ -42,9 +80,9 @@
     font-family: "Roboto Mono", monospace;
     font-size: 150%;
     margin-top: 30%;
-}
+} */
 
-#sectioncard {
+/* #sectioncard {
     height: auto;
     width: auto;
     text-align: center;
@@ -52,9 +90,9 @@
 
 #sectioncardtitle {
     /* font-family: "Roboto Mono", monospace; */
-    font-size: 120%;
-    /* margin-top: 50%; */
-}
+    /* font-size: 120%; */
+    /* margin-top: 50%;
+} */
 
 
 
@@ -92,3 +130,4 @@ body {
 #jtext {
     font-family: "Roboto Mono", monospace;
 }
+

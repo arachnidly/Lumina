@@ -1,5 +1,5 @@
 from application.database import db
-from flask_security import UserMixin, RoleMixin
+# from flask_security import UserMixin, RoleMixin
 from datetime import timedelta
 
 # create model for relationship between roles and users
@@ -8,7 +8,8 @@ roles_users = db.Table('roles_users',
                        db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
 # create model for roles
-class Role(db.Model, RoleMixin):
+# class Role(db.Model, RoleMixin):
+class Role(db.Model):
     """Model for roles. Each role can be assigned to multiple users."""
     __tablename__ = 'role'
     id = db.Column(db.Integer, primary_key=True)
@@ -17,11 +18,13 @@ class Role(db.Model, RoleMixin):
 
 
 # create  model for user that stores the type of user in roles
-class User(db.Model, UserMixin):
+# class User(db.Model, UserMixin):
+class User(db.Model):
     """Model for users. Each user can have multiple roles and book requests."""
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), nullable=False, unique=True)
+    # email = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
     books_requested = db.relationship('Book', secondary='book_request')
@@ -38,7 +41,7 @@ class Section(db.Model):
     __tablename__ = 'section'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
+    title = db.Column(db.String(255), nullable=False)
     date_created = db.Column(db.Date, default=db.func.current_date())
     description = db.Column(db.Text)
     avg_rating = db.Column(db.Float)
@@ -101,9 +104,7 @@ class Book(db.Model):
 
     # Establishing many-to-many relationship with authors
     authors = db.relationship('Author', secondary=author_book, backref=db.backref('books', lazy='dynamic'))
-
-    def __repr__(self):
-        return f'<Book {self.name}>'
+    
 
 
 class BookRequest(db.Model):
@@ -111,9 +112,9 @@ class BookRequest(db.Model):
     __tablename__ = 'book_request'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
-    date_requested = db.Column(db.Date, default=db.func.current_date())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    date_requested = db.Column(db.Date, default=db.func.current_timestamp())
     fulfilled = db.Column(db.Boolean, default=False)
 
 
@@ -129,7 +130,7 @@ class BookFeedback(db.Model):
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     # Define relationship with User and Book
-    user = db.relationship('User', backref=db.backref('book_feedback', lazy='dynamic'))
+    # user = db.relationship('User', backref=db.backref('book_feedback', lazy='dynamic'))
     book = db.relationship('Book', backref=db.backref('book_feedback', lazy='dynamic'))
 
 
@@ -146,8 +147,8 @@ class BookLoan(db.Model):
     returned = db.Column(db.Boolean, default=False)
 
     # Define the relationship with User and Book
-    user = db.relationship('User', backref=db.backref('book_loans', lazy='dynamic'))
-    book = db.relationship('Book', backref=db.backref('book_loans', lazy='dynamic'))
+    # user = db.relationship('User', backref=db.backref('book_loans', lazy='dynamic'))
+    # book = db.relationship('Book', backref=db.backref('book_loans', lazy='dynamic'))
 
 
 

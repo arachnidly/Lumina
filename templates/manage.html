@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumina - {{title}}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Ephesis&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <!-- Navbar brand -->
+
+            <a class="navbar-brand" href="/">Lumina</a>
+
+            <!-- Navbar toggle button -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navbar items -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" id="jtext" href="/home">Librarian Dashboard</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" id="jtext" href="/search">Search</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" id="jtext" href="/manage">Manage Catalog</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" id="jtext" href="/">Manage Users</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" id="jtext" href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- End of Navbar -->
+
+    <!-- Main content -->
+    <div class="container mt-5">
+        <div class="mb-3">
+            <!-- Section Management Card -->
+            <h2 class="text-center mb-3">Section Management</h2>
+        </div>
+        <!-- Add Section Card -->
+        <div class="row justify-content-center mb-4">
+
+                <div class="card mx-2" style="min-width: 5rem;">
+                    <div>
+                        <div class="card-header text-center">
+                            <h5 class="card-title">Add Section</h5>
+                        </div>
+                    </div>
+                    <div class="card-body text-center">
+                        <a href="section/add" class="btn btn-custom">+</a>
+                    </div>
+                </div>
+        </div>
+
+        <!-- Existing Sections -->
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <h3 class="text-center">Existing Sections</h3>
+            </div>
+
+        <div class="row">
+                <!-- Existing Sections Cards -->
+                <!-- Repeat this part for each section -->
+                {% for section in sections %}
+                <div class="card mx-2" style="max-width: 20rem; max-height: fit-content;">
+                    <div>
+                        <div class="card-header text-center">
+                            <h5 class="card-title">{{section.title}}</h5>
+                        </div>
+                    </div>
+                    <div class="card-body text-center">
+                        <p class="card-text">Number of books: {{section.books}}</p>
+                        <p class="card-text">{{section.description}}</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-around">
+                        <a href="/section/"{{section.title}} class="btn btn-custom">Manage</a>
+                        {# <a href="/section/" + {{section.title}} + "/editsection" class="btn btn-custom">Edit</a> #}
+                        {# <a href="/section/delete" class="btn btn-custom">Delete</a> #}
+                    </div>
+                </div>
+
+                {% endfor %}
+
+                <!-- View All Sections Link -->
+                <div class="ml-auto my-auto">
+                    <a href="/section">Click here to view all sections</a>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Book Management Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card text-center custom-card">
+                <div class="custom-card-header">
+
+                    <div class="card-header">
+                        <h5 class="card-title">Add Book</h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Add a new book to the library</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/manage/book/add" class="btn btn-custom">+</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Consolidated View for Management -->
+    <div class="row">
+        <!-- Manage Sections -->
+        <div class="col-md-6 mb-4">
+            <div class="card text-center custom-card">
+                <div class="custom-card-header">
+                    <div class="card-header">
+                        <h5 class="card-title">Manage Current Sections</h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Browse, edit, update or delete sections</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/section" class="btn btn-custom">-></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage Books -->
+        <div class="col-md-6 mb-4">
+            <div class="card custom-card text-center">
+                <div class="custom-card-header">
+                    <div class="card-header">
+                        <h5 class="card-title">Manage Books</h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Browse, edit, update or delete books</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/books" class="btn btn-custom">-></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- End of main content -->
+
+    <!-- ... [Existing Scripts] ... -->
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- End -->
+</body>
+
+</html>
