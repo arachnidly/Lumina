@@ -1,154 +1,129 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "body.html" %}
+{% block body %}
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lumina - {{title}}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Ephesis&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/static/styles.css">
-    <style>
-        table {
-            /* border-top: 1px solid lightgray; */
-            border-bottom: 1px solid lightgray;
-        }
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+        <!-- Navbar brand -->
 
-    
-    </style>
-</head>
+        <a class="navbar-brand" href="/">Lumina</a>
 
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid">
-            <!-- Navbar brand -->
+        <!-- Navbar toggle button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <a class="navbar-brand" href="/">Lumina</a>
-
-            <!-- Navbar toggle button -->
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <!-- Navbar items -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" id="jtext" href="/home">Librarian Dashboard</a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" id="jtext" href="/search">Search</a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" id="jtext" href="/manage">Manage Catalog</a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" id="jtext" href="#">Manage Users</a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" id="jtext" href="/logout">Logout</a>
-                    </li>
-                </ul>
-            </div>
+        <!-- Navbar items -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" id="jtext" href="/">Librarian Dashboard</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/search">Search</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/manage">Manage Catalog</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="#">Manage Users</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/logout">Logout</a>
+                </li>
+            </ul>
         </div>
-    </nav>
-    <!-- End of Navbar -->
+    </div>
+</nav>
+<!-- End of Navbar -->
 
-    <!-- Main content -->
-    <div class="container">
+<!-- Main content -->
+<div class="container">
     <!-- Book Requests table -->
-        <div class="row">
-            <div class="col-12">
-                <h3 class="text-center mt-5">Book Requests</h3>
-            </div>
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-center mt-5">Book Requests</h3>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <table class="table table-hover mt-3" style="text-align: center;">
-                    <thead>
-                        <tr>
-                            <th scope="col">Book Title</th>
-                            <th scope="col">Requested by</th>
-                            <th scope="col">Requested on</th>
-                            <th scope="col">Book Status</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {# {} #}
-                        <tr>
-                            <td>{{book_title}}</td>
-                            <td>{{username}}</td>
-                            <td>{{requested_on}}</td>
-                            <td>{{status}}</td>
-                            <td>
-                                <a href="/issue/{{username}}{{book_id}}" class="btn-sm btn-custom">Approve</a>
-                                <a href="/reserve/{{book_id}}" class="btn-sm btn-custom">Reserve</a>
-                                <a href="/reject/{{book_id}}" class="btn-sm btn-custom">Reject</a>
-                            </td>
-                        </tr>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hover mt-3" style="text-align: center;">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Book Title</th>
+                        <th scope="col">Requested by</th>
+                        <th scope="col">Requested on</th>
+                        <th scope="col">Book Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {# {} #}
+                    <tr>
+                        <td>{{request_id}}</td>
+                        <td>{{book_title}}</td>
+                        <td>{{username}}</td>
+                        <td>{{requested_on}}</td>
+                        <td>{{status}}</td>
+                        <td>
+                            <a href="/issue/{{username}}{{book_id}}" class="btn-sm btn-custom">Approve</a>
+                            <a href="/reserve/{{book_id}}" class="btn-sm btn-custom">Reserve</a>
+                            <a href="/reject/{{book_id}}" class="btn-sm btn-custom">Reject</a>
+                        </td>
+                    </tr>
 
-                        {# {{/requests}} #}
-                    </tbody>
-                </table>
-            </div>
+                    {# {{/requests}} #}
+                </tbody>
+            </table>
         </div>
+    </div>
     <!-- End of Book Requests table -->
 
     <!-- Currently Issued Books table -->
 
-        <div class="row">
-            <div class="col-12">
-                <h3 class="text-center mt-5">Currently Issued Books</h3>
-            </div>
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-center mt-5">Currently Issued Books</h3>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <table class="table table-hover mt-3" style="text-align: center;">
-                    <thead>
-                        <tr>
-                            <th scope="col">Book Title</th>
-                            <th scope="col">Issued to</th>
-                            <th scope="col">Issued on</th>
-                            <th scope="col">Return by</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {# {} #}
-                        <tr>
-                            <td>{{book_title}}</td>
-                            <td>{{username}}</td>
-                            <td>{{issued_on}}</td>
-                            <td>{{return_by}}</td>
-                            <td>
-                                <a href="/extend/{{book_id}}" class="btn-sm btn-custom">Extend</a>
-                                <a href="/return/{{book_id}}" class="btn-sm btn-custom">Return</a>
-                            </td>
-                        </tr>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hover mt-3" style="text-align: center;">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Book Title</th>
+                        <th scope="col">Issued to</th>
+                        <th scope="col">Issued on</th>
+                        <th scope="col">Return by</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {# {} #}
+                    <tr>
+                        <td>{{issue_id}}</td>
+                        <td>{{book_title}}</td>
+                        <td>{{username}}</td>
+                        <td>{{issued_on}}</td>
+                        <td>{{return_by}}</td>
+                        <td>
+                            <a href="/extend/{{book_id}}" class="btn-sm btn-custom">Extend</a>
+                            <a href="/return/{{book_id}}" class="btn-sm btn-custom">Return</a>
+                        </td>
+                    </tr>
 
-                        {# {{/issued}} #}
-                    </tbody>
-                </table>
-            </div>
-            <!-- div closing col 12 -->
-
+                    {# {{/issued}} #}
+                </tbody>
+            </table>
         </div>
-    <!-- End of Currently Issued Books table and row-->
+        <!-- div closing col 12 -->
 
     </div>
-        <!-- End of main content inside container -->
+    <!-- End of Currently Issued Books table and row-->
 
-        <!-- Bootstrap JS and dependencies -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <!-- End -->
-</body>
-
-</html>
+</div>
+<!-- End of main content inside container -->
+{% endblock %}

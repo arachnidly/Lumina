@@ -1,109 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'body.html' %}
+{% block body %}
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lumina - {{title}}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Ephesis&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/static/styles.css">
-</head>
 
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid">
-            <!-- Navbar brand -->
-
-            <a class="navbar-brand" href="/">Lumina</a>
-
-            <!-- Navbar toggle button -->
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <!-- Navbar items -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" id="jtext" href="/home">Librarian Dashboard</a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" id="jtext" href="/search">Search</a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" id="jtext" href="/manage">Manage Catalog</a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" id="jtext" href="/">Manage Users</a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" id="jtext" href="/logout">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <!-- End of Navbar -->
-
-    <!-- Main content -->
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
-        <div>
-            <div id="pagetitle">
-                <h2>Add New Section</h2>
-            </div>
-            {#
-        </div> #}
-        <!-- Add Section Form -->
+        <!-- Navbar brand -->
 
-        <div class="container" id="pagetitle2" style="margin-top: 3%;">
-            <div class="row justify-content-center">
-                <div class="col-4">
-                </div>
-                <div class="col-4">
-                    <form action="/section/add" method="post">
-                        <div class="form-group">
-                            <label for="sectionTitle" style="margin-bottom: 5%;">Title</label>
-                            <input type="text" class="form-control" id="sectionTitle" name="sectionTitle"
-                                placeholder="Enter the title" required>
-                        </div>
-                        <div class="form-group" style="margin-top: 10%;">
-                            <label for="sectionDescription" style="margin-bottom: 5%;">Description</label>
-                            <textarea class="form-control" id="sectionDescription" name="sectionDescription"
-                                placeholder="Describe the section briefly" rows="3" required></textarea>
-                        </div>
-                        <div class="form-group" style="margin-top: 10%;">
-                            <label for="sectionLocation" style="margin-bottom: 5%;">Location</label>
-                            <input type="text" class="form-control" id="sectionLocation" name="sectionLocation"
-                                placeholder="Enter the location" required>
-                        <div class="text-center" style="margin-top: 10%;">
-                            <button type="submit" class="btn btn-custom">Create</button>
-                        </div>
-                    </form>
-                    {% if section_title_error %}
-                    <p><span style="color: rgb(255, 0, 0); font">The title you entered already exists. Please
-                            enter a unique title or <a href="/redirect/url_for{{section.id}}">manage existing
-                                section</a></span></p>
-                    {% endif %}
-                </div>
-                <div class="col-4">
-                </div>
+        <a class="navbar-brand" href="/">Lumina</a>
+
+        <!-- Navbar toggle button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar items -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" id="jtext" href="/">Librarian Dashboard</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/search">Search</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" id="jtext" href="/manage">Manage Catalog</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/">Manage Users</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- End of Navbar -->
+
+<!-- Main content -->
+<div class="container-fluid">
+    <div id="pagetitle" style="margin-top: 10%;">
+        <h2>Add New Section</h2>
+    </div>
+
+    <!-- Add Section Form -->
+
+    <div class="container" id="pagetitle2" style="margin-top: 3%;">
+        <div class="row d-flex justify-content-center">
+
+            <div class="col-4">
+                <form action="/section/add" method="post">
+                    <div class="form-group">
+                        <label for="sectionTitle" style="margin-bottom: 5%;">Section Title</label>
+                        <input type="text" class="form-control" id="sectionTitle" name="sectionTitle"
+                            placeholder="Enter the title" required>
+                    </div>
+                    <div class="form-group" style="margin-top: 10%;">
+                        <label for="sectionDescription" style="margin-bottom: 5%;">Section Description</label>
+                        <textarea class="form-control" id="sectionDescription" name="sectionDescription"
+                            placeholder="Describe the section briefly" rows="3"></textarea>
+                    </div>
+
+                    <div class="text-center" style="margin-top: 10%;">
+                        <button type="submit" class="btn btn-primary btn-custom">Create</button>
+                    </div>
+                </form>
+                {% if section_title_error %}
+                <p style="margin-top: 10%;"><span style="color: rgb(255, 0, 0); font">The title you entered already
+                        exists. Please
+                        enter a unique title or <a href="/redirect/url_for{{section.id}}">manage existing
+                            section</a></span></p>
+                {% endif %}
             </div>
         </div>
     </div>
+</div>
 
-    <!-- End of main content -->
+{% endblock %}
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <!-- End -->
-</body>
-
-</html>

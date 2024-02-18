@@ -6,7 +6,7 @@ from application.config import *
 
 # home page
 @app.route('/', methods=['GET', 'POST'])
-@app.route("/home")
+# @app.route("/home")
 def home():
     # if user isn't logged in, redirect to welcome page with login button
     if "user" in session:

@@ -1,20 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
+{% extends "body.html" %}
+{% block body %}
 
-    <div class="card-footer">
-        <a href="/section" class="btn btn-md btn-custom">View</a>
-        <a href="/section={{ section.id }}/edit" class="btn btn-md btn-custom">Edit</a>
-        <a href="/section={{ section.id }}/delete" class="btn btn-md btn-custom">Delete</a>
+<!-- Existing Sections -->
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <h3 class="text-center">Existing Sections</h3>
     </div>
 
+    <div class="row">
+        <!-- Existing Sections Cards -->
+        <!-- Repeat this part for each section -->
+        {% for section in sections %}
+        <div class="card mx-2" style="max-width: 20rem; max-height: fit-content;">
+            <div>
+                <div class="card-header text-center">
+                    <h5 class="card-title">{{section.title}}</h5>
+                </div>
+            </div>
+            <div class="card-body text-center">
+                <p class="card-text">Number of books: {{section.books}}</p>
+                <p class="card-text">Average rating: {{section.rating}}</p>
+                {# <p class="card-text">{{section.description}}</p> #}
+            </div>
+            <div class="card-footer d-flex justify-content-around">
+                <a href="/section/{{section.title}}/manage" class="btn btn-custom">Manage</a>
+                {# <a href="/section/" + {{section.title}} + "/editsection" class="btn btn-custom">Edit</a> #}
+                {# <a href="/section/delete" class="btn btn-custom">Delete</a> #}
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+</div>
 
 
-</body>
-</html>
+<div class="container">
+    <a href="/section/{{ section.id }}/edit" class="btn btn-md btn-custom">Edit</a>
+    <a href="/section/{{ section.id }}/delete" class="btn btn-md btn-custom">Delete</a>
+</div>
+
+
+
+{% endblock %}
