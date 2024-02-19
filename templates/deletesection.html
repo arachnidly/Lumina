@@ -1,0 +1,91 @@
+{% extends "body.html" %}
+{% block body %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+        <!-- Navbar brand -->
+
+        <a class="navbar-brand" href="/">Lumina</a>
+
+        <!-- Navbar toggle button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar items -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" id="jtext" href="/">Librarian Dashboard</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/search">Search</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" id="jtext" href="/manage">Manage Catalog</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/">Manage Users</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- End of Navbar -->
+
+<!-- Main Content -->
+<!-- Main content -->
+<div class="container mt-3">
+    <div>
+        <a id="backlink" href="/section/{{section.id}}">
+            <h4><- Back</h4>
+        </a>
+    </div>
+
+    <hr>
+
+    <div id="pagetitle" style="margin-top: 10%;">
+        <h3>Delete {{section.title}}?</h3>
+    </div>
+
+    <div class="container" style="margin-top: 2%; text-align:center;">
+
+        <div class="row d-flex justify-content-center mt-3">
+
+            <div class="col-md-8">
+                <div style="font-size: larger;">
+                    Are you sure that you want to delete the section {{section.title}}?
+                    <p style="margin-top: 1%; font-size:large;">
+                        This action cannot be undone.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-4">
+                        <form class="text-center" method="POST" id="delete-section">
+                            <button class="btn btn-lg btn-decision" type="submit">Yes</button>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/section/{{section.id}}" class="btn btn-lg btn-decision">No</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+
+    </div>
+</div>
+
+
+{% endblock %}

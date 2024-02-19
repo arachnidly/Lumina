@@ -1,5 +1,5 @@
 from app import db
-from application.models import User, Role, Section
+from application.models import User, Role, Section, Book
 import json
 
 db.create_all()
@@ -13,9 +13,11 @@ roley = [{"id":1,"name":"admin","description":"girlboss librarian admin"},
          {"id":5,"name":"owner","description":"purchased book so lifetime reading access and can download book as pdf"}]
 
 ## sections json
-secs = [{"id":1,"title":"Fantasy","date_created":"2024-02-12","description":"Fantasy is a genre of fiction that features imaginary and unrealistic elements. It often involves supernatural powers, like magic and magical creatures. Fantasy stories often contain elements of Medievalism, such as castles, knights, kings, magical swords, and references to ancient spells.","avg_rating":None},
-        {"id":2,"title":"Horror","date_created":"2024-02-12","description":"Horror is a genre of fiction that is intended to disturb, frighten or scare.[1] Horror is often divided into the sub-genres of psychological horror and supernatural horror, which are in the realm of speculative fiction.","avg_rating":None},
-        {"id":3,"title":"Science Fiction","date_created":"2024-02-12","description":"Science fiction (sometimes shortened to SF or sci-fi) is a genre of speculative fiction, which typically deals with imaginative and futuristic concepts such as advanced science and technology, space exploration, time travel, parallel universes, and extraterrestrial life. It is related to fantasy, horror, and superhero fiction and contains many subgenres. Its exact definition has long been disputed among authors, critics, scholars, and readers.","avg_rating":None}]
+secs = [{"id":1,"title":"Fantasy","date_created":"2024-02-10","description":"Fantasy is a genre of fiction that features imaginary and unrealistic elements. It often involves supernatural powers, like magic and magical creatures.","avg_rating":None},
+        {"id":2,"title":"Horror","date_created":"2024-02-11","description":"Horror is a genre of fiction that is intended to disturb, frighten or scare. Horror is often divided into the sub-genres of psychological horror and supernatural horror, which are in the realm of speculative fiction.","avg_rating":None},
+        {"id":3,"title":"Science Fiction","date_created":"2024-02-12","description":"Science fiction (sometimes shortened to SF or sci-fi) is a genre of speculative fiction, which typically deals with imaginative and futuristic concepts such as advanced science and technology, space exploration, time travel, parallel universes, and extraterrestrial life.","avg_rating":None},
+        {"id":4,"title":"Classics","date_created":"2024-02-19","description":"A classic stands the test of time. The work is usually considered to be a representation of the period in which it was written; and the work merits lasting recognition.","avg_rating":None}]
+
 
 # adding roles
 

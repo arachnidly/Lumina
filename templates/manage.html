@@ -39,58 +39,57 @@
 <!-- End of Navbar -->
 
 <!-- Main content -->
-<div class="container mt-5">
-    <div class="mb-4">
-        <!-- Section Management Card -->
-        <h2 class="text-center">Manage Sections</h2>
+<div class="container mb-4">
+    {% if sections%}
+    <div class="mb-2">
+        <h2 class="text-center" id="pagetitle">Sections</h2>
     </div>
 
     <div class="row justify-content-center mb-4">
-        <!-- Existing Sections Cards -->
-        <!-- Repeat this part for each section -->
         {% for section in sections %}
-        <div class="card mx-2" style="max-width: 20rem; max-height: fit-content;">
+        {% set book_count = section.books|length %}
+        <div class="card mx-2 section-card">
             <div>
                 <div class="card-header text-center">
                     <h5 class="card-title">{{section.title}}</h5>
                 </div>
             </div>
             <div class="card-body text-center">
-                <p class="card-text">Date added: {{section.date_created}}</p>
-                {# <p class="card-text">Number of books: {{section.books}}</p> #}
-                {# <p class="card-text">Number of books: {{section.book_count}}</p> #}
+                <p class="card-text">Date added: {{ section.date_created.strftime('%d-%m-%Y') }}</p>
+
+                <p class="card-text">Number of books: {{book_count}}</p>
                 {% if section.avg_rating == None%}
-                <p class="card-text">Average rating: -</p>
+                <p class="card-text">Rating: -</p>
                 {% else %}
-                <p class="card-text">Average rating: {{section.avg_rating}}</p>
+                <p class="card-text">Rating: {{section.avg_rating}}</p>
                 {% endif %}
-                {# <p class="card-text">{{section.description}}</p> #}
             </div>
             <div class="card-footer d-flex justify-content-around">
-                <a href="/section/{{section.title}}/manage" class="btn btn-custom">Manage</a>
-                {# <a href="/section/" + {{section.title}} + "/editsection" class="btn btn-custom">Edit</a> #}
-                {# <a href="/section/delete" class="btn btn-custom">Delete</a> #}
+                <a href="/section/{{section.id}}" class="btn btn-custom">Manage</a>
+                <a href="/section={{section.id}}/addbook" class="btn btn-custom">Add Book</a>
             </div>
         </div>
 
         {% endfor %}
 
     </div>
-</div>
-<br>
-{# <hr> #}
+
+    {% endif %}
 
 
-<div class="row justify-content-center mt-5">
-    <div class="pagetitle2">
-        <h4>Add New Section</h4>
+
+    <div class="row justify-content-center mt-4">
+        <div id="pagetitle2">
+            <h2>New Section</h2>
+        </div>
     </div>
-</div>
-<div class="row justify-content-center mt-3">
-    <a href="section/add" class="btn btn-custom btn-lg" style="">+</a>
-</div>
 
+    <div class="row justify-content-center mt-2">
+        <a href="section/add" class="btn btn-custom btn-lg" aria-label="Add new section">+</a>
 
+    </div>
+
+</div>
 
 
 <!-- End of main content -->

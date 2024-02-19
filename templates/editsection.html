@@ -1,0 +1,88 @@
+{% extends 'body.html' %}
+{% block body %}
+
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+        <!-- Navbar brand -->
+
+        <a class="navbar-brand" href="/">Lumina</a>
+
+        <!-- Navbar toggle button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar items -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" id="jtext" href="/">Librarian Dashboard</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/search">Search</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" id="jtext" href="/manage">Manage Catalog</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/">Manage Users</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- End of Navbar -->
+
+<!-- Main content -->
+<div class="container mt-3">
+<div>
+    <a id="backlink" href="/section/{{section.id}}">
+        <h4><- Back</h4>
+    </a>
+</div>
+<hr>
+    <div id="pagetitle" style="margin-top: 7%;">
+        <h2>Edit Section</h2>
+    </div>
+
+    <!-- Edit Section Form -->
+
+    <div class="container" id="pagetitle2" style="margin-top: 3%;">
+        <div class="row d-flex justify-content-center">
+
+            <div class="col-4">
+                <form method="POST" id="formy">
+                    <div class="form-group">
+                        <label for="sectionTitle" style="margin-bottom: 5%;">Section Title</label>
+                        <input type="text" class="form-control" id="sectionTitle" name="sectionTitle"
+                            placeholder="Enter the title" required>
+                    </div>
+                    <div class="form-group" style="margin-top: 10%;">
+                        <label for="sectionDescription" style="margin-bottom: 5%;">Section Description</label>
+                        <textarea class="form-control" id="sectionDescription" name="sectionDescription"
+                            placeholder="Describe the section briefly" rows="3"></textarea>
+                    </div>
+
+                    <div class="text-center" style="margin-top: 10%;">
+                        <button type="submit" class="btn btn-lg btn-custom">Edit</button>
+                    </div>
+                </form>
+                {% if section_title_error %}
+                <p style="margin-top: 10%;"><span style="color: rgb(255, 0, 0); font">The title you entered already
+                        exists. Please
+                        enter a unique title or <a href="/section={{section.id}}">manage existing
+                            section</a></span></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

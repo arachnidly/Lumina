@@ -1,0 +1,109 @@
+{% extends 'body.html' %}
+{% block body %}
+
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+        <!-- Navbar brand -->
+
+        <a class="navbar-brand" href="/">Lumina</a>
+
+        <!-- Navbar toggle button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar items -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" id="jtext" href="/">Librarian Dashboard</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/search">Search</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" id="jtext" href="/manage">Manage Catalog</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/">Manage Users</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" id="jtext" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- End of Navbar -->
+
+<!-- Main content -->
+<div class="container mt-3">
+    <div>
+        <a id="backlink" href="/book/{{book.id}}">
+            <h4><- Back</h4>
+        </a>
+    </div>
+    <hr>
+    <div id="pagetitle" style="margin-top: 2%;">
+        <h2>Edit Book</h2>
+    </div>
+
+    <!-- Edit Book Form -->
+
+    <div class="container" id="pagetitle2" style="margin-top: 1%;">
+        <div class="row d-flex justify-content-center">
+
+            <div class="col-4">
+                <form method="POST" enctype="multipart/form-data" id="formy">
+
+                    <div class="form-group">
+                        <label for="bookTitle" style="margin-bottom: 5%;">Book Title</label>
+                        <input type="text" class="form-control" id="bookTitle" name="bookTitle" placeholder="Book title"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bookAuthor" style="margin-bottom: 5%;">Author</label>
+                        <input type="text" class="form-control" id="bookAuthor" name="bookAuthor" placeholder="Author"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bookDescription" style="margin-bottom: 5%;">Book Description</label>
+                        <textarea class="form-control" id="bookDescription" name="bookDescription"
+                            placeholder="Book description"></textarea>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="bookFile" style="margin-bottom: 5%;">Upload Book PDF</label>
+
+                        <input type="file" id="bookFile" name="bookFile" accept=".pdf" placeholder="Upload PDF"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bookCover" style="margin-bottom: 5%;">Upload Book Cover</label>
+                        <input type="file" id="bookCover" name="bookCover" accept="image/*" placeholder="Upload Cover"
+                            required>
+                    </div>
+
+                    <div class="text-center" style="margin-top: 10%;">
+                        <button type="submit" class="btn btn-custom">Edit</button>
+                    </div>
+                </form>
+                {% if book_title_error %}
+                <p style="margin-top: 10%;"><span style="color: rgb(255, 0, 0); font">The title you entered already
+                        exists. Please
+                        enter a unique title or <a href="/section/{{section.id}}/books/{{book.id}}">manage existing
+                            book</a></span></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

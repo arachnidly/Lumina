@@ -14,13 +14,13 @@
         <!-- Navbar items -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" id="jtext" href="/">{{user}}'s Dashboard</a>
                 </li>
                 <li class="nav-item ">
                     <a class="nav-link" id="jtext" href="/search">Search</a>
                 </li>
-                <li class="nav-item ">
+                <li class="nav-item active">
                     <a class="nav-link" id="jtext" href="/browse">Browse</a>
                 </li>
                 <li class="nav-item ">
@@ -36,8 +36,49 @@
 <!-- Navbar end -->
 
 <!-- Main content -->
-<div class="container mt-3">
-    
+<div class="container mb-4">
+    {% if sections%}
+    <div class="mb-2">
+        <h2 class="text-center" id="pagetitle">Sections</h2>
+    </div>
+
+    <div class="row justify-content-center mb-4">
+        {% for section in sections %}
+        {% set book_count = section.books|length %}
+
+        <div class="card mx-2 section-card">
+            <div>
+                <div class="card-header text-center">
+                    <h5 class="card-title">{{section.title}}</h5>
+                </div>
+            </div>
+            <div class="card-body text-center">
+                <p class="card-text">Date added: {{ section.date_created.strftime('%d-%m-%Y') }}</p>
+                <p class="card-text">Number of books: {{book_count}}</p>
+
+                {% if section.avg_rating == None%}
+                <p class="card-text">Rating: -</p>
+                {% else %}
+                <p class="card-text">Rating: {{section.avg_rating}}</p>
+                {% endif %}
+                
+            </div>
+            <div class="card-footer d-flex justify-content-around">
+                <a href="/section/{{section.id}}" class="btn btn-custom">View</a>
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+
+
+
 </div>
 
+
+<!-- End of main content -->
 {% endblock %}

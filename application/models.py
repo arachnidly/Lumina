@@ -56,41 +56,33 @@ class Section(db.Model):
             self.avg_rating = None
 
     # Establishing many-to-many relationship with books
-    books = db.relationship('Book', secondary=sections_books, backref=db.backref('sections', lazy='dynamic'))
+    books = db.relationship('Book', secondary=sections_books)
 
-    def __repr__(self):
-        return f'<Section {self.name}>'
 
 # Association table for the many-to-many relationship between books and authors
-author_book = db.Table('author_book',
-                        db.Column('author_id', db.Integer(), db.ForeignKey('author.id')),
-                        db.Column('book_id', db.Integer(), db.ForeignKey('book.id')))
+
+# author_book = db.Table('author_book',
+#                         db.Column('author_id', db.Integer(), db.ForeignKey('author.id'), primary_key=True),
+#                         db.Column('book_id', db.Integer(), db.ForeignKey('book.id'), primary_key=True))
 
 class Author(db.Model):
     """Model for authors of books. Each author can write multiple books."""
     __tablename__ = 'author'
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False, unique=True)
 
-    def __repr__(self):
-        return f'<Author {self.name}>'
 
 class Book(db.Model):
-
     """Model for the books in the library. Each book can be written by multiple authors and belong to multiple sections."""
-    
     __tablename__ = 'book'
-
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
     content_link = db.Column(db.String, nullable=False)  # Assuming this is a URL to a PDF file
     description = db.Column(db.Text)
     bookcover_link = db.Column(db.String, nullable=False)
-
-    # Remove the is_borrowed field from the Book model since book availability will be determined by the presence of a loan record in the BookLoan table.
-    # is_borrowed = db.Column(db.Boolean, default=False)
-    # Additional attribute for average rating
+    section_id = db.Column(db.Integer, db.ForeignKey('section.id'))
+    # author = db.Column(db.String, db.ForeignKey("author.name"), nullable=False)
+    authors = db.relationship('Author', secondary='book_authors')
     avg_rating = db.Column(db.Float)
 
     # Method to calculate average rating
@@ -102,10 +94,10 @@ class Book(db.Model):
         else:
             self.avg_rating = None
 
-    # Establishing many-to-many relationship with authors
-    authors = db.relationship('Author', secondary=author_book, backref=db.backref('books', lazy='dynamic'))
-    
-
+class BookAuthors(db.Model):
+    __tablename__ = 'book_authors'
+    author_id = db.Column(db.Integer, db.ForeignKey("author.id"), primary_key=True, nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey("book.id"), primary_key=True, nullable=False) 
 
 class BookRequest(db.Model):
     """Model for book requests. Each request is made by a user and can be for one book."""
