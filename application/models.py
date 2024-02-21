@@ -16,7 +16,6 @@ class Role(db.Model):
     name = db.Column(db.String, nullable=False, unique=True)
     description = db.Column(db.String(255))
 
-
 # create  model for user that stores the type of user in roles
 # class User(db.Model, UserMixin):
 class User(db.Model):
@@ -27,6 +26,7 @@ class User(db.Model):
     # email = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
+    quota = db.Column(db.Integer, default=0)
     books_requested = db.relationship('Book', secondary='book_request')
     books_borrowed = db.relationship('Book', secondary='book_loan')
 
@@ -83,16 +83,16 @@ class Book(db.Model):
     section_id = db.Column(db.Integer, db.ForeignKey('section.id'))
     # author = db.Column(db.String, db.ForeignKey("author.name"), nullable=False)
     authors = db.relationship('Author', secondary='book_authors')
-    avg_rating = db.Column(db.Float)
+    rating = db.Column(db.Float)
 
     # Method to calculate average rating
-    def calculate_average_rating(self):
-        total_ratings = sum(feedback.rating for feedback in self.book_feedback)
-        num_ratings = len(self.book_feedback)
-        if num_ratings > 0:
-            self.avg_rating = total_ratings / num_ratings
-        else:
-            self.avg_rating = None
+    # def calculate_average_rating(self):
+    #     total_ratings = sum(feedback.rating for feedback in self.book_feedback)
+    #     num_ratings = len(self.book_feedback)
+    #     if num_ratings > 0:
+    #         self.avg_rating = total_ratings / num_ratings
+    #     else:
+    #         self.avg_rating = None
 
 class BookAuthors(db.Model):
     __tablename__ = 'book_authors'
@@ -106,7 +106,9 @@ class BookRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    date_requested = db.Column(db.Date, default=db.func.current_timestamp())
+    book_title = db.Column(db.String(255))
+    username = db.Column(db.String(30))
+    date_requested = db.Column(db.DateTime, default=db.func.current_timestamp())
     fulfilled = db.Column(db.Boolean, default=False)
 
 
@@ -117,9 +119,8 @@ class BookFeedback(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
+    username = db.Column(db.String(30))
     rating = db.Column(db.Integer, nullable=False)
-    comment = db.Column(db.Text)
-    date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     # Define relationship with User and Book
     # user = db.relationship('User', backref=db.backref('book_feedback', lazy='dynamic'))
@@ -133,6 +134,8 @@ class BookLoan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    book_title = db.Column(db.String(255))
+    username = db.Column(db.String(30))
 
     date_borrowed = db.Column(db.Date, default=db.func.current_date())
     return_date = db.Column(db.Date, default=db.func.current_date() + timedelta(days=7))

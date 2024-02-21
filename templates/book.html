@@ -93,49 +93,83 @@
                     <h5>Description</h5>
                 </div>
                 <div class="row justify-content-center mt-1">
-                    <p>{{book['description']}}</p>
+                    {# <p>{{book['description']}}</p> #}
+                    <p style="font-size: 90%;">
+                        {% for line in book.description.split('\n') %}
+                        {{ line }}
+                        <br />
+                        {% endfor %}
+                    </p>
                 </div>
 
-                <div class="row justify-content-center mt-2">
-                    <h5></h5>
-                </div>
+                
+                <!-- based on user's role, implement some actions associated with this book -->
                 {% for role in roles %}
                 <div class="row justify-content-center mt-1" style="text-align: center;">
                     {% if role=='admin'%}
-                    <div class="col-md-4">
-                        <a href="/book={{book.id}}/edit" class="btn btn-custom">Edit</a>
-                    </div>
-                    <div class="col-md-4">
-                        <a href="/book={{book.id}}/delete" class="btn btn-danger">Delete</a>
-                    </div>
-                    {% elif role=='issuer'%}
-                    <div class="col-md-4">
-                        <a href="/book={{book.id}}/read" class="btn btn-custom">Read</a>
-                    </div>
-                    <div class="col-md-4">
-                        <a href="/book={{book.id}}/return" class="btn btn-danger">Return</a>
-                    </div>
+                    <!-- modify book type actions only available to admin -->
+                        <div class="col-md-4">
+                            <a href="/book={{book.id}}/edit" class="btn btn-custom">Edit</a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="/book={{book.id}}/delete" class="btn btn-danger">Delete</a>
+                        </div>
 
-                    {% elif role=='basicuser' %}
-                    <div class="col-md-4">
-                        <a href="/book={{book.id}}/request" class="btn btn-custom">Request</a>
-                    </div>
+                    {% else %}
+                    <!-- basicuser can only make book request and delete existing request IF YKNOW-->
+                        {% if not requested %}
+                        <!-- if this book has not been requested by any user  -->
+                            {%if quota < 5%} <!-- if user has not reached the maximum number of books they can request -->
+                                <div class="col-md-4">
+                                    <form action="/book/{{book.id}}/request" method="post">
+                                        <button type="submit" class="btn btn-custom">Request</button>
+                                    </form>
+                                </div>
+                            {% else %}
+                                <div class="col-md-4">
+                                    <p>You have reached the maximum number of books you can request.</p>
+                                </div>
+                            {% endif %}
+
+                        {% else %}
+                        <!-- if this book has been requested by ANY user -->
+                            {% if user == book_request.username %}
+                            <!-- if this book has been requested by the current user -->
+
+                                {% if book_request.fulfilled == 0 %}
+                                    <div class="col-md-4">
+                                        <form action="/request/{{book_request.id}}/delete" method="post">
+                                            <button type="submit" class="btn btn-custom">Delete Request</button>
+                                        </form>
+                                    </div>
+                                {% else %}
+                                    <div class="col-md-4">
+                                        <a href="/book={{book.id}}/read" class="btn btn-custom">Read Book</a>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a href="/book={{book.id}}/return" class="btn btn-danger"></a>
+                                    </div>
+                                {%endif%}
+
+                            {% else %}
+                                <div class="col-md-4">
+                                    <p>This book has been requested by another user.</p>
+                                </div>
+                            {% endif %}
+
+                        {% endif %}
                     {% endif %}
                 </div>
                 {% endfor %}
 
+
+
             </div>
 
-
         </div>
-
     </div>
-<hr>
-    <div class="row">
-    {# vBook Feedback #}
-    </div>
-
-   
 </div>
-    
+
+
 {% endblock %}
+```
