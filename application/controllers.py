@@ -12,19 +12,24 @@ def home():
     if "user" in session:
     # role = session['user_role']
         user = User.query.filter_by(username=session['user']).first()
+        print(user.books_requested)
         roles = []
         for role in user.roles:
             roles.append(role.name)
+        
         all_book_requests = BookRequest.query.filter_by(fulfilled=False).all()
         user_book_requests = BookRequest.query.filter_by(user_id=user.id, fulfilled=False).all()
-        
+        all_book_loans = BookLoan.query.filter_by(returned=False).all()
+        user_book_loans = BookLoan.query.filter_by(user_id=user.id, returned=False).all()
         if roles[0] == 'admin':
-            return render_template('librariandashboard.html', title='Librarian Dashboard', roles=roles, user=session['user'], book_requests=all_book_requests)
+            return render_template('librariandashboard.html', title='Librarian Dashboard', roles=roles, user=session['user'], book_requests=all_book_requests, book_loans=all_book_loans)
         else:
-            return render_template('userdashboard.html', title='Dashboard', roles=roles, user=session['user'], book_requests=user_book_requests)
+            return render_template('userdashboard.html', title='Dashboard', roles=roles, user=session['user'], book_requests=user_book_requests, book_loans=user_book_loans)
+        
     else:
         return render_template('welcome.html', title='Welcome')
 
+# login page
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if 'user' in session:
@@ -41,7 +46,7 @@ def login():
             if valid_user.password != password:
                 return render_template('login.html', pwd_error=True, title="Login")
             session['user'] = username
-            # session['user_role'] = valid_user.roles[0].name
+            session['user_role'] = valid_user.roles[0].name
             return redirect("/")
 
 @app.route("/librarianlogin", methods=['GET', 'POST'])
@@ -62,7 +67,7 @@ def librarianlogin():
             if valid_user.roles[0].name != 'admin':
                 return render_template('librarianlogin.html', auth_error=True, title="Librarian Login")
             session['user'] = username
-            # session['user_role'] = valid_user.roles[0].name
+            session['user_role'] = valid_user.roles[0].name
             return redirect("/")
 
 # user sign-up page
@@ -86,7 +91,7 @@ def signup():
                 return render_template('signup.html', username_error=True)
             # create user
             user = User(username=username, password=password)
-            user.roles.append(Role.query.filter_by(name='basicuser').first())
+            user.roles.append(Role.query.filter_by(name='user').first())
             db.session.add(user)
             db.session.commit()
             session['user'] = username
@@ -161,7 +166,7 @@ def browse():
         return redirect("/")
 
 # add section
-@app.route("/section/add", methods=['GET','POST'])
+@app.route("/addsection", methods=['GET','POST'])
 def add_section():
     if "user" in session and session['user_role'] == 'admin':
         user = User.query.filter_by(username=session['user']).first()
@@ -202,7 +207,7 @@ def section(section_id):
         section_book_count = len(books)
 
         if request.method == 'GET':
-            book_requests = BookRequest.query.filter_by(fulfilled=False).all()
+            book_requests = BookRequest.query.filter_by(fulfilled=0).all()
             return render_template('section.html', title=section.title, user=session['user'], roles=roles, role=roles[0], section=section, books=books, book_count=section_book_count)
         if request.method == 'POST':
             book_requests = BookRequest.query.filter_by(fulfilled=False).all()
@@ -237,6 +242,9 @@ def delete_section(section_id):
         elif request.method == 'POST':
             sections_books = Book.query.filter_by(section_id=section_id).all()
             for book in sections_books:
+                book = BookRequest.query.filter_by(book_id=book.id).first()
+                if book:
+                    return redirect(url_for('section', section_id=section_id, error='Section cannot be deleted because it contains books that have been requested.'))
                 db.session.delete(book)
                 # db.session.commit()
 
@@ -306,7 +314,7 @@ def book(book_id):
         if book_request:
             requested = True
         if request.method == 'GET':
-            return render_template('book.html', title=book.title, user=session['user'], quota=quota, roles=roles, book=book, img=book.bookcover_link, section=section, feedbacks=feedbacks, requested=requested, book_request=book_request)
+            return render_template('book.html', title=book.title, user=session['user'], quota=quota, roles=roles, book=book, img=book.bookcover_link, section=section, requested=requested, book_request=book_request)
         if request.method == 'POST':
             
             return redirect("/")
@@ -355,50 +363,59 @@ def delete_book(book_id):
         return redirect("/")
     
 # request book
-@app.route("/book/<book_id>/request", methods=['GET','POST'])
+@app.route("/book/<book_id>/requestbook", methods=['GET','POST'])
 def request_book(book_id):
     book = Book.query.filter_by(id=book_id).first()
-    if "user" in session:
-        # return render_template('requestbook.html', title='Request Book', user=session['user'], book=book)
-        user = User.query.filter_by(username=session['user']).first()
-        quota = user.quota
-        book_request = BookRequest.query.filter_by(book_id=book_id, user_id=user.id).first()
-        if book_request:
-            return redirect(url_for('book', book_id=book_id,  book_request=book_request))
-        book_request = BookRequest(book_id=book.id, user_id=user.id, book_title=book.title, username=user.username)
-        db.session.add(book_request)
-        user.quota += 1
-        db.session.commit()
-        return redirect(url_for('book', book_id=book_id, book_request=book_request))
-    else:
-        return redirect("/")
+    if request.method == 'POST':
+        if "user" in session:
+            # return render_template('requestbook.html', title='Request Book', user=session['user'], book=book)
+            user = User.query.filter_by(username=session['user']).first()
+            quota = user.quota
+            book_request = BookRequest.query.filter_by(book_id=book_id, user_id=user.id).first()
+            if book_request:
+                return redirect(url_for('book', book_id=book_id,  book_request=book_request))
+            book_request = BookRequest(book_id=book.id, user_id=user.id, book_title=book.title, username=user.username)
+            db.session.add(book_request)
+            user.quota += 1
+            db.session.commit()
+            return redirect('/')
+        else:
+            return redirect("/")
 
 
 
 # delete book request
-@app.route("/request/<request_id>/delete", methods=['GET','POST'])
-def delete_request(request_id):
-    book_request = BookRequest.query.filter_by(id=request_id).first()
+@app.route("/book_request/<book_request_id>/delete", methods=['GET','POST'])
+def delete_book_request(book_request_id):
+    book_request = BookRequest.query.filter_by(id=book_request_id).first()
     if "user" in session:
         user = User.query.filter_by(username=session['user']).first()
         db.session.delete(book_request)
         user.quota -= 1
         db.session.commit()
-        return redirect(url_for('book', book_id=book_request.book_id))
+        return redirect('/')
     else:
         return redirect("/")
 
 # approve book request
-@app.route("/request/<request_id>/approve", methods=['GET','POST'])
-def approve_request(request_id):
-    book_request = BookRequest.query.filter_by(id=request_id).first()
-    if "user" in session and session['user_role'] == 'admin':
-        book = Book.query.filter_by(id=book_request.book_id).first()
-        user = User.query.filter_by(id=book_request.user_id).first()
-        book_request.fulfilled = True
-        loan = BookLoan(book_id=book.id, user_id=user.id, book_title=book.title, username=user.username)
-        db.session.add(loan)
-        db.session.commit()
-        return redirect(url_for('/', username=session['user']))
-    else:
-        return redirect("/")
+@app.route("/book_request/<book_request_id>/approve", methods=['GET','POST'])
+def approve_request(book_request_id):
+    book_request = BookRequest.query.filter_by(id=book_request_id).first()
+    if request.method == 'POST':
+        if "user" in session and session['user_role'] == 'admin':
+            username = book_request.username
+            username = str(username).lower()
+            book_title = book_request.book_title
+            book_title = str(book_title).upper()
+            book = Book.query.filter_by(id=book_request.book_id).first()
+            user = User.query.filter_by(id=book_request.user_id).first()
+            book_request.fulfilled = True
+            book_loan = BookLoan(book_id=book.id, user_id=user.id, book_title=book_title, username=username)
+            db.session.add(book_loan)
+            db.session.commit()
+            return redirect(url_for('/', username=session['user']))
+        else:
+            return redirect("/")
+    
+# return book
+# @app.route("/<book_loan_id>/return", methods=['GET','POST'])

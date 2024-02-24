@@ -104,31 +104,30 @@
 
                 
                 <!-- based on user's role, implement some actions associated with this book -->
-                {% for role in roles %}
                 <div class="row justify-content-center mt-1" style="text-align: center;">
-                    {% if role=='admin'%}
-                    <!-- modify book type actions only available to admin -->
-                        <div class="col-md-4">
-                            <a href="/book={{book.id}}/edit" class="btn btn-custom">Edit</a>
-                        </div>
-                        <div class="col-md-4">
-                            <a href="/book={{book.id}}/delete" class="btn btn-danger">Delete</a>
-                        </div>
+                {% for role in roles %}
 
-                    {% else %}
-                    <!-- basicuser can only make book request and delete existing request IF YKNOW-->
+                    {% if role=='admin'%}
+                <!-- modify book type actions only available to admin -->
+                    <div class="col-md-4">
+                        <a href="/book={{book.id}}/edit" class="btn btn-custom">Edit</a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/book={{book.id}}/delete" class="btn btn-danger">Delete</a>
+                    </div>
+
+                    {% else %} 
+                    <!-- user can only make book request and delete existing request IF YKNOW-->
                         {% if not requested %}
                         <!-- if this book has not been requested by any user  -->
                             {%if quota < 5%} <!-- if user has not reached the maximum number of books they can request -->
                                 <div class="col-md-4">
-                                    <form action="/book/{{book.id}}/request" method="post">
+                                    <form action="/book/{{book.id}}/requestbook" method="post">
                                         <button type="submit" class="btn btn-custom">Request</button>
                                     </form>
                                 </div>
                             {% else %}
-                                <div class="col-md-4">
                                     <p>You have reached the maximum number of books you can request.</p>
-                                </div>
                             {% endif %}
 
                         {% else %}
@@ -136,27 +135,26 @@
                             {% if user == book_request.username %}
                             <!-- if this book has been requested by the current user -->
 
-                                {% if book_request.fulfilled == 0 %}
-                                    <div class="col-md-4">
-                                        <form action="/request/{{book_request.id}}/delete" method="post">
-                                            <button type="submit" class="btn btn-custom">Delete Request</button>
-                                        </form>
-                                    </div>
-                                {% else %}
-                                    <div class="col-md-4">
-                                        <a href="/book={{book.id}}/read" class="btn btn-custom">Read Book</a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="/book={{book.id}}/return" class="btn btn-danger"></a>
-                                    </div>
-                                {%endif%}
-
+                            {% if book_request.fulfilled == 0 %}
+                                <div class="col-md-4">
+                                    <form action="/book_request/{{book_request.id}}/delete" method="post">
+                                        <button type="submit" class="btn btn-custom">Delete Request</button>
+                                    </form>
+                                </div>
                             {% else %}
                                 <div class="col-md-4">
-                                    <p>This book has been requested by another user.</p>
+                                    <a href="/book={{book.id}}/read" class="btn btn-custom">Read Book</a>
                                 </div>
-                            {% endif %}
+                                <div class="col-md-4">
+                                    <form action="/book/{{book.id}}/return" method="post">
+                                        <button type="submit" class="btn btn-custom">Return Book</button>
+                                    </form>
+                                </div>
+                            {%endif%}
 
+                            {% else %}
+                                    <p>This book has been requested by another user.</p>
+                            {% endif %}
                         {% endif %}
                     {% endif %}
                 </div>
@@ -172,4 +170,3 @@
 
 
 {% endblock %}
-```

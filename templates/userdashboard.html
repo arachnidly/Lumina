@@ -36,8 +36,100 @@
 <!-- Navbar end -->
 
 <!-- Main content -->
-<div class="container mt-3">
-    
-</div>
+<div class="container">
+    <!-- Book Requests table -->
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-center mt-5">My Book Requests</h3>
+        </div>
+    </div>
+    {% if book_requests %}
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hover mt-3" style="text-align: center;">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Book Title</th>
+                        <th scope="col">Requested on</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in book_requests%}
 
+                    <tr>
+                        <td>{{request.id}}</td>
+                        <td>{{request.book_title}}</td>
+                        <td>{{request.date_requested}}</td>
+                        <td>
+                            <form action="/request/{{request.id}}/delete" method="post">
+                                <button type="submit" class="btn btn-custom">Delete Request</button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <p class="text-center mt-3">You have no book requests</p>
+        </div>
+    </div>
+    {% endif %}
+    <!-- End of Book Requests table -->
+
+    <!-- Currently Issued Books table -->
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-center mt-5">Currently Issued Books</h3>
+        </div>
+    </div>
+    {% if book_loans %}
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hover mt-3" style="text-align: center;">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Book Title</th>
+                        <th scope="col">Return Due Date</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for loan in book_loans%}
+
+                <tr>
+                    <td>{{loan.id}}</td>
+                    <td>{{loan.book_title}}</td>
+                    <td>{{loan.return_date}}</td>
+                    <td>
+                        <form action="/book_loan/{{book.id}}/return" method="post">
+                            <button type="submit" class="btn btn-custom">Return</button>
+                        </form>
+                    </td>
+                </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- div closing col 12 -->
+
+    </div>
+
+    {% else %}
+
+    <div class="row">
+        <div class="col-12">
+            <p class="text-center mt-3">You have no books issued</p>
+        </div>
+        <!-- End of Currently Issued Books table and row-->
+    </div>
+    {% endif %}
 {% endblock %}

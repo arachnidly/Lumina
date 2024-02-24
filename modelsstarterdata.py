@@ -7,10 +7,7 @@ db.create_all()
 
 ## roles json
 roley = [{"id":1,"name":"admin","description":"girlboss librarian admin"},
-         {"id":2,"name":"basicuser","description":"basic user"},
-         {"id":3,"name":"issuer","description":"currently has reading access to book till return date"},
-         {"id":4,"name":"has_read","description":"has been issued book at some point so can review"},
-         {"id":5,"name":"owner","description":"purchased book so lifetime reading access and can download book as pdf"}]
+         {"id":2,"name":"user","description":"basicuser"}]
 
 ## sections json
 secs = [{"id":1,"title":"Fantasy","date_created":"2024-02-10","description":"Fantasy is a genre of fiction that features imaginary and unrealistic elements. It often involves supernatural powers, like magic and magical creatures.","avg_rating":None},
@@ -26,7 +23,7 @@ for role in roley:
     db.session.add(new_role)
 db.session.commit()
 
-# adding an admin and a user
+# 
 girl = User(username='athena', password='admin1234')
 cat = User(username='ara', password='1234')
 db.session.add(girl)
@@ -35,7 +32,7 @@ db.session.commit()
 
 # adding roles to users
 girl.roles.append(Role.query.filter_by(name='admin').first())
-cat.roles.append(Role.query.filter_by(name='basicuser').first())
+cat.roles.append(Role.query.filter_by(name='user').first())
 db.session.commit()
 
 
@@ -44,6 +41,7 @@ db.session.commit()
 for section in secs:
     new_section = Section(title=section['title'], description=section['description'])
     db.session.add(new_section)
-db.session.commit()
+    db.session.commit()
+
 
 
