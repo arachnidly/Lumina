@@ -2,3 +2,6 @@ Project-Report.md
 static/Books
 hehe.html
 templates/logintemplate.html
+.DS_Store
+/__pycache__/
+**/__pycache__/
