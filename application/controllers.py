@@ -5,6 +5,8 @@ from application.models import *
 from application.config import *
 import os
 
+import datetime
+
 # home page
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -17,10 +19,10 @@ def home():
         for role in user.roles:
             roles.append(role.name)
         
-        all_book_requests = BookRequest.query.filter_by(fulfilled=False).all()
-        user_book_requests = BookRequest.query.filter_by(user_id=user.id, fulfilled=False).all()
-        all_book_loans = BookLoan.query.filter_by(returned=False).all()
-        user_book_loans = BookLoan.query.filter_by(user_id=user.id, returned=False).all()
+        all_book_requests = BookRequest.query.filter_by(issued=False).all()
+        user_book_requests = BookRequest.query.filter_by(user_id=user.id, issued=False).all()
+        all_book_loans = BookRequest.query.filter_by(issued=True, returned=False).all()
+        user_book_loans = BookRequest.query.filter_by(user_id=user.id, issued=True, returned=False).all()
         if roles[0] == 'admin':
             return render_template('librariandashboard.html', title='Librarian Dashboard', roles=roles, user=session['user'], book_requests=all_book_requests, book_loans=all_book_loans)
         else:
@@ -207,10 +209,10 @@ def section(section_id):
         section_book_count = len(books)
 
         if request.method == 'GET':
-            book_requests = BookRequest.query.filter_by(fulfilled=0).all()
+            book_requests = BookRequest.query.filter_by(issued=0).all()
             return render_template('section.html', title=section.title, user=session['user'], roles=roles, role=roles[0], section=section, books=books, book_count=section_book_count)
         if request.method == 'POST':
-            book_requests = BookRequest.query.filter_by(fulfilled=False).all()
+            book_requests = BookRequest.query.filter_by(issued=False).all()
 
             return redirect("/")
     else:
@@ -371,9 +373,12 @@ def request_book(book_id):
             # return render_template('requestbook.html', title='Request Book', user=session['user'], book=book)
             user = User.query.filter_by(username=session['user']).first()
             quota = user.quota
+            print(quota)
             book_request = BookRequest.query.filter_by(book_id=book_id, user_id=user.id).first()
             if book_request:
                 return redirect(url_for('book', book_id=book_id,  book_request=book_request))
+            if quota > 4:
+                return redirect(url_for('book', book_id=book_id, quota_error=True))
             book_request = BookRequest(book_id=book.id, user_id=user.id, book_title=book.title, username=user.username)
             db.session.add(book_request)
             user.quota += 1
@@ -403,15 +408,19 @@ def approve_request(book_request_id):
     book_request = BookRequest.query.filter_by(id=book_request_id).first()
     if request.method == 'POST':
         if "user" in session and session['user_role'] == 'admin':
-            username = book_request.username
-            username = str(username).lower()
-            book_title = book_request.book_title
-            book_title = str(book_title).upper()
-            book = Book.query.filter_by(id=book_request.book_id).first()
-            user = User.query.filter_by(id=book_request.user_id).first()
-            book_request.fulfilled = True
-            book_loan = BookLoan(book_id=book.id, user_id=user.id, book_title=book_title, username=username)
-            db.session.add(book_loan)
+            # username = book_request.username
+            # username = str(username).lower()
+            # book_title = book_request.book_title
+            # book_title = str(book_title).upper()
+            # book = Book.query.filter_by(id=book_request.book_id).first()
+            # user = User.query.filter_by(id=book_request.user_id).first()
+            # book_request.issued = True
+            # book_loan = BookLoan(book_id=book.id, user_id=user.id, book_title=book_title, username=username)
+            # db.session.add(book_loan)
+            # db.session.commit()
+            book_request.issued = True
+            book_request.date_issued = datetime.date.today()
+            book_request.date_due = datetime.date.today() + datetime.timedelta(days=7)
             db.session.commit()
             return redirect(url_for('/', username=session['user']))
         else:
