@@ -30,7 +30,6 @@ class User(db.Model):
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
     quota = db.Column(db.Integer, default=0, nullable=False)
     books_requested = db.relationship('Book', secondary='book_request')
-    books_read = db.relationship('Book', secondary='book_loan')
 
 
 # Association table for the many-to-many relationship between sections and books
