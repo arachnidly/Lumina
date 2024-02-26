@@ -120,13 +120,14 @@
                     <!-- user can only make book request and delete existing request IF YKNOW-->
                         {% if not requested %}
                         <!-- if this book has not been requested by any user  -->
-                            {%if quota < 5%} <!-- if user has not reached the maximum number of books they can request -->
-                                <div class="col-md-4">
-                                    <form action="/book/{{book.id}}/requestbook" method="post">
-                                        <button type="submit" class="btn btn-custom">Request</button>
-                                    </form>
-                                </div>
-                            {% else %}
+                            {# {%if quota < 5%} <!-- if user has not reached the maximum number of books they can request --> #}
+                            <div class="col-md-4">
+                                <form action="/book/{{book.id}}/requestbook" method="post">
+                                    <button type="submit" class="btn btn-custom">Request</button>
+                                </form>
+                            </div>
+                            {# {% else %} #}
+                            {% if quota_error %}
                                     <p>You have reached the maximum number of books you can request.</p>
                             {% endif %}
 
@@ -135,7 +136,7 @@
                             {% if user == book_request.username %}
                             <!-- if this book has been requested by the current user -->
 
-                            {% if book_request.fulfilled == 0 %}
+                            {% if book_request.issued == 0 %}
                                 <div class="col-md-4">
                                     <form action="/book_request/{{book_request.id}}/delete" method="post">
                                         <button type="submit" class="btn btn-custom">Delete Request</button>
