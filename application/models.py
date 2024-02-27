@@ -30,6 +30,7 @@ class User(db.Model):
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
     quota = db.Column(db.Integer, default=0, nullable=False)
     books_requested = db.relationship('Book', secondary='book_request')
+    
 
 
 # Association table for the many-to-many relationship between sections and books
@@ -68,7 +69,7 @@ class Book(db.Model):
     section_id = db.Column(db.Integer, db.ForeignKey('section.id'))
     # author = db.Column(db.String, db.ForeignKey("author.name"), nullable=False)
     authors = db.relationship('Author', secondary='book_authors')
-    is_issued = db.Column(db.Boolean, default=False)
+    # getting rid of this is_issued = db.Column(db.Boolean, default=False) cuz request table will handle this
     avg_rating = db.Column(db.Float)
 
 
