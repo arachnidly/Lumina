@@ -1,43 +1,6 @@
 {% extends "body.html" %}
 {% block body %}
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light">
-    <div class="container-fluid">
-        <!-- Navbar brand -->
-
-        <a class="navbar-brand" href="/">Lumina</a>
-
-        <!-- Navbar toggle button -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- Navbar items -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" id="jtext" href="/">Librarian Dashboard</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" id="jtext" href="/search">Search</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" id="jtext" href="/manage">Manage Catalog</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" id="jtext" href="#">Manage Users</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" id="jtext" href="/logout">Logout</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-<!-- End of Navbar -->
-
 <!-- Main content -->
 <!-- Book Requests table -->
 <div class="container">
@@ -46,7 +9,7 @@
             <h3 class="text-center mt-5">Book Requests</h3>
         </div>
     </div>
-    {% if pending_book_requests %}
+    {% if pending_requests %}
     <div class="row">
         <div class="col-12">
             <table class="table table-hover mt-3" style="text-align: center;">
@@ -59,7 +22,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for book_request in pending_book_requests %}
+                    {% for book_request in pending_requests %}
                     <tr>
                         <td>{{book_request.book_title}}</td>
                         <td>{{book_request.username}}</td>
@@ -92,7 +55,7 @@
             <h3 class="text-center mt-5">Currently Issued Books</h3>
         </div>
     </div>
-    {% if active_book_loans %}
+    {% if issued_now %}
     <div class="row">
         <div class="col-12">
             <table class="table table-hover mt-3" style="text-align: center;">
@@ -106,7 +69,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for loan in active_book_loans %}
+                    {% for loan in issued_now %}
                     <tr>
                         <td>{{loan.book_title}}</td>
                         <td>{{loan.username}}</td>

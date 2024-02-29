@@ -1,61 +1,6 @@
 {% extends 'body.html'%}
 {% block body %}
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light">
-    <div class="container-fluid">
-        <!-- Navbar brand -->
-
-        <a class="navbar-brand" href="/">Lumina</a>
-
-        <!-- Navbar toggle button -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- Navbar items -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                {% if role=='admin' %}
-                <li class="nav-item">
-                    <a class="nav-link" id="jtext" href="/">Librarian Dashboard</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" id="jtext" href="/search">Search</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" id="jtext" href="/manage">Manage Catalog</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" id="jtext" href="/">Manage Users</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" id="jtext" href="/logout">Logout</a>
-                </li>
-                {% else %}
-                <li class="nav-item ">
-                    <a class="nav-link" id="jtext" href="/">{{user}}'s Dashboard</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" id="jtext" href="/search">Search</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" id="jtext" href="/browse">Browse</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" id="jtext" href="#">Stats</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" id="jtext" href="/logout">Logout</a>
-                </li>
-                {%endif%}
-            </ul>
-        </div>
-    </div>
-</nav>
-<!-- End of Navbar -->
-
 <!-- Main Content -->
 <div class="container mt-3">
     <div>
@@ -134,33 +79,33 @@
                             
 
                         {% else %}
-                        <!-- if this book has been requested by ANY user -->
+                        <!-- if this book has been requested by ANY user so its unavailable -->
                             {% if user == book_request.username %}
                             <!-- if this book has been requested by the current user -->
 
-                            {% if not book_request.issued %}
-                            <!--  if this book was requested by the current user and the librarian hasn't approved the request yet -->
-                                <div class="col-md-4">
-                                    <form action="/book_request/{{book_request.id}}/delete" method="post">
-                                        <button type="submit" class="btn btn-custom">Delete Request</button>
-                                    </form>
-                                    <!-- in this case the user can delete their book_request -->
-                                </div>
-                            {% else %}
-                            <!-- if this book was requested by the current user and the librarian has approved the request and issued the book -->
-                                <div class="col-md-4">
-                                    <a href="/book={{book.id}}/book_request={{book_request.id}}/read" class="btn btn-custom">Read Book</a>
-                                </div>
+                                {% if not book_request.issued%}
+                                <!--  if this book was requested by the current user and the librarian hasn't approved the request yet -->
+                                    <div class="col-md-4">
+                                        <form action="/book_request/{{book_request.id}}/delete" method="post">
+                                            <button type="submit" class="btn btn-custom">Delete Request</button>
+                                        </form>
+                                        <!-- in this case the user can delete their book_request -->
+                                    </div>
+                                {% else %}
+                                <!-- if this book was requested by the current user and the librarian has approved the request and issued the book -->
+                                    <div class="col-md-4">
+                                        <a href="/book={{book.id}}/book_request={{book_request.id}}/read" class="btn btn-custom">Read Book</a>
+                                    </div>
 
-                                <div class="col-md-4">
-                                    <form action="/book_request/{{loan.id}}/return" method="post">
-                                        <button type="submit" class="btn-sm btn-custom">Return Book</button>
-                                    </form>
-                                </div>
-                            {%endif%}
+                                    <div class="col-md-4">
+                                        <form action="/book_request/{{book_request.id}}/return" method="post">
+                                            <button type="submit" class="btn btn-custom">Return Book</button>
+                                        </form>
+                                    </div>
+                                {%endif%}
 
                             {% else %}
-                                    <small>You cannot make a request for this book as this book has already been requested by another reader.</small>
+                                <small>You cannot make a request for this book as this book has already been requested by another reader.</small>
                             {% endif %}
                         {% endif %}
                     {% endif %}
