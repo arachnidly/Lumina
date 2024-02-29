@@ -6,19 +6,37 @@ from application.config import *
 import datetime
 import os
 
+# auto return issued books if overdue
+@app.before_request
+def auto_return():
+    book_requests = BookRequest.query.filter_by(issued=True, returned=False).all()
+    if book_requests is None:
+        return
+    for book_request in book_requests:
+        if datetime.datetime.now() > book_request.auto_return_timestamp:
+            book_request.returned = True
+            book = Book.query.filter_by(id=book_request.book_id).first()
+            user = User.query.filter_by(id=book_request.user_id).first()
+            user.quota -= 1
+            book_request.date_returned = datetime.date.today()
+            book_request.issued = False
+            book.available = True
+            db.session.commit()
+    return
+
+
 # home page
 @app.route('/', methods=['GET', 'POST'])
 def home():
     # if user isn't logged in, redirect to welcome page with login button
     if "user" in session:
         user = User.query.filter_by(username=session['user']).first()
-        print(user.books_requested)
-        pending_book_requests = BookRequest.query.filter_by(issued=False).all()
-        user_pending_book_requests = BookRequest.query.filter_by(user_id=user.id, issued=False).all()
+        pending_book_requests = BookRequest.query.filter_by(issued=False, returned=False).all()
+        user_pending_book_requests = BookRequest.query.filter_by(user_id=user.id, issued=False, returned=False).all()
         all_book_loans = BookRequest.query.filter_by(issued=True, returned=False).all()
         user_book_loans = BookRequest.query.filter_by(user_id=user.id, issued=True, returned=False).all()
-        completed_book_loans = BookRequest.query.filter_by(issued=True, returned=True).all()
-        user_completed_book_loans = BookRequest.query.filter_by(user_id=user.id, issued=True, returned=True).all()
+        completed_book_loans = BookRequest.query.filter_by(returned=True).all()
+        user_completed_book_loans = BookRequest.query.filter_by(user_id=user.id, returned=True).all()
         if session['user_role'] == 'admin':
             return render_template('librariandashboard.html', title='Librarian Dashboard', user=session['user'], pending_book_requests=pending_book_requests, active_book_loans=all_book_loans, role=session['user_role'], completed_loans=completed_book_loans)
         else:
@@ -171,7 +189,6 @@ def add_section():
         return redirect("/")
     
 
-
 # section page
 @app.route("/section/<section_id>", methods=['GET', 'POST'])
 def section(section_id):
@@ -287,8 +304,9 @@ def book(book_id):
         if book_request:
             if book_request.returned == False:
                 requested = True
+    
         if request.method == 'GET':
-            return render_template('book.html', title=book.title, user=session['user'], quota=quota, role=session['user_role'], book=book, img=book.bookcover_link, section=section, requested=requested, book_request=book_request)
+            return render_template('book.html', title=book.title, user=session['user'], quota=quota, role=session['user_role'], book=book, img=book.bookcover_link, section=section, book_request=book_request, available=book.available)
         if request.method == 'POST':
             
             return redirect("/")
@@ -355,17 +373,18 @@ def request_book(book_id):
             # return render_template('requestbook.html', title='Request Book', user=session['user'], book=book)
             user = User.query.filter_by(username=session['user']).first()
             quota = user.quota
-            print(quota)
+            section = Section.query.filter_by(id=book.section_id).first()
             book_request = BookRequest.query.filter_by(book_id=book_id, user_id=user.id, returned=False).first()
             if book_request:
                 return redirect(url_for('book', book_id=book_id,  book_request=book_request))
             if quota > 4:
-                return render_template('book.html', book_id=book_id, book_request=book_request, quota_error=True, title=book.title, user=session['user'], role=session['user_role'], book=book)
+                return render_template('book.html', book_id=book_id, book_request=book_request, quota_error=True, title=book.title, user=session['user'], role=session['user_role'], book=book, section=section)
             authors = [author.name for author in book.author]
             author = ', '.join(authors)
             book_request = BookRequest(book_id=book.id, user_id=user.id, book_title=book.title, book_author=author, username=user.username)
             db.session.add(book_request)
             user.quota += 1
+            book.available = False
             db.session.commit()
             return redirect('/')
         else:
@@ -381,6 +400,8 @@ def delete_book_request(book_request_id):
         user = User.query.filter_by(username=session['user']).first()
         db.session.delete(book_request)
         user.quota -= 1
+        book = Book.query.filter_by(id=book_request.book_id).first()
+        book.available = True
         db.session.commit()
         return redirect('/')
     else:
@@ -399,6 +420,10 @@ def approve_request(book_request_id):
             book_request.issued = True # setting the issued attribute of the book request to True (issued was previously False)
             book_request.date_issued = datetime.date.today()
             book_request.date_due = datetime.date.today() + datetime.timedelta(days=7)
+            book_request.auto_return_timestamp = datetime.datetime.now() + datetime.timedelta(days=7)
+            # for testing auto return
+            # book_request.date_due = datetime.date.today() + datetime.timedelta(minutes=1)
+            # book_request.auto_return_timestamp = datetime.datetime.now() + datetime.timedelta(minutes=1)
             db.session.commit()
             return redirect('/')
         else:
@@ -415,10 +440,10 @@ def return_book(book_request_id):
             book = Book.query.filter_by(id=book_request.book_id).first()
             user = User.query.filter_by(id=book_request.user_id).first()
             user.quota -= 1
-            book.is_issued = False
+            book.available = True
             book_request.date_returned = datetime.date.today()
-            # db.session.delete(book_request) commenting 
             db.session.commit()
             return redirect('/')
         else:
             return redirect("/")
+        

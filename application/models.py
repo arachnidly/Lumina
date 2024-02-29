@@ -23,12 +23,11 @@ class User(db.Model):
     """Model for users. Each user can have multiple roles and book requests."""
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    quota = db.Column(db.Integer, default=0)
+    quota = db.Column(db.Integer, default=0, nullable=False)
     username = db.Column(db.String(30), nullable=False, unique=True)
     # email = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
-    quota = db.Column(db.Integer, default=0, nullable=False)
     books_requested = db.relationship('Book', secondary='book_request')
     
 # Association table for the many-to-many relationship between sections and books
@@ -68,7 +67,7 @@ class Book(db.Model):
     section_id = db.Column(db.Integer, db.ForeignKey('section.id'))
     # author = db.Column(db.String, db.ForeignKey("author.name"), nullable=False)
     author = db.relationship('Author', secondary='book_authors')
-    # getting rid of this is_issued = db.Column(db.Boolean, default=False) cuz request table will handle this
+    available = db.Column(db.Boolean, default=  True)
     avg_rating = db.Column(db.Float)
 
 
@@ -94,6 +93,7 @@ class BookRequest(db.Model):
     issued = db.Column(db.Boolean, default=False)
     date_issued = db.Column(db.Date)
     date_due = db.Column(db.Date)
+    auto_return_timestamp = db.Column(db.DateTime)
     returned = db.Column(db.Boolean, default=False)
     date_returned = db.Column(db.Date)
 

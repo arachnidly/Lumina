@@ -115,19 +115,20 @@
 
                     {% else %} 
                     <!-- user can only make book request and delete existing request IF YKNOW-->
-                        {% if not requested %}
+                        {% if available %}
                         <!-- if this book has not been requested by any user  -->
                             {# {%if quota < 5%} <!-- if user has not reached the maximum number of books they can request --> #}
                             <div class="col-md-4">
                                 <form action="/book/{{book.id}}/requestbook" method="post">
                                     <button type="submit" class="btn btn-custom">Request</button>
                                 </form>
+                            </div>
+                            <div class="col-md-10" style="margin-top: 2%;">
                                 {% if quota_error %}
-                                    <p>You have reached the maximum number of books you can request (5).<br>
-                                    To make a request for this book, please delete one of your existing book requests<br>
-                                    or, if your book request has been approved, return the issued book.</p>
+                                    <small>You have reached the maximum number of books you can request (5). To make a request for this book, please delete one of your existing book requests or, if your book request has been approved, return the issued book.</small>
                                 {% endif %}
                             </div>
+                            
                             {# {% else %} #}
                             
 
@@ -136,8 +137,8 @@
                             {% if user == book_request.username %}
                             <!-- if this book has been requested by the current user -->
 
-                            {% if book_request.issued == 0 %}
-                            <!-- Enter this code block if for the specific book_request the librarian hasn't approved the request yet -->
+                            {% if not book_request.issued %}
+                            <!--  if this book was requested by the current user and the librarian hasn't approved the request yet -->
                                 <div class="col-md-4">
                                     <form action="/book_request/{{book_request.id}}/delete" method="post">
                                         <button type="submit" class="btn btn-custom">Delete Request</button>
@@ -145,18 +146,20 @@
                                     <!-- in this case the user can delete their book_request -->
                                 </div>
                             {% else %}
+                            <!-- if this book was requested by the current user and the librarian has approved the request and issued the book -->
                                 <div class="col-md-4">
                                     <a href="/book={{book.id}}/book_request={{book_request.id}}/read" class="btn btn-custom">Read Book</a>
                                 </div>
+
                                 <div class="col-md-4">
-                                    <form action="/book/{{book.id}}/book_request={{book_request.id}}/return" method="post">
-                                        <button type="submit" class="btn btn-custom">Return Book</button>
+                                    <form action="/book_request/{{loan.id}}/return" method="post">
+                                        <button type="submit" class="btn-sm btn-custom">Return Book</button>
                                     </form>
                                 </div>
                             {%endif%}
 
                             {% else %}
-                                    <small>Cannot make a request for this book!<br/>This book has already been requested by another reader.</small>
+                                    <small>You cannot make a request for this book as this book has already been requested by another reader.</small>
                             {% endif %}
                         {% endif %}
                     {% endif %}
