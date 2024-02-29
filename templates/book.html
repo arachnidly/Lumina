@@ -91,13 +91,14 @@
                     <h5>Description</h5>
                 </div>
                 <div class="row justify-content-center mt-1">
-                    {# <p>{{book['description']}}</p> #}
+                    <p>{%if book.description%}</p>
                     <p style="font-size: 90%;">
                         {% for line in book.description.split('\n') %}
                         {{ line }}
                         <br />
                         {% endfor %}
                     </p>
+                    <p>{%else%}-{%endif%}</p>
                 </div>
 
                 

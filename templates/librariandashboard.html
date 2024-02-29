@@ -52,7 +52,6 @@
             <table class="table table-hover mt-3" style="text-align: center;">
                 <thead>
                     <tr>
-                        <th scope="col">ID</th>
                         <th scope="col">Book Title</th>
                         <th scope="col">Requested by</th>
                         <th scope="col">Requested on</th>
@@ -62,7 +61,6 @@
                 <tbody>
                     {% for book_request in pending_book_requests %}
                     <tr>
-                        <td>req{{book_request.id}}</td>
                         <td>{{book_request.book_title}}</td>
                         <td>{{book_request.username}}</td>
                         <td>{{book_request.date_requested.strftime('%d-%m-%Y')}}</td>
@@ -100,7 +98,6 @@
             <table class="table table-hover mt-3" style="text-align: center;">
                 <thead>
                     <tr>
-                        <th scope="col">ID</th>
                         <th scope="col">Book Title</th>
                         <th scope="col">Issued to</th>
                         <th scope="col">Issued on</th>
@@ -111,7 +108,6 @@
                 <tbody>
                     {% for loan in active_book_loans %}
                     <tr>
-                        <td>req{{loan.id}}</td>
                         <td>{{loan.book_title}}</td>
                         <td>{{loan.username}}</td>
                         <td>{{loan.date_issued.strftime('%d-%m-%Y')}}</td>

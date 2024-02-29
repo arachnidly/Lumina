@@ -217,7 +217,11 @@ def edit_section(section_id):
         if request.method == 'GET':
             return render_template('editsection.html', title='Edit Section', user=session['user'], role=session['user_role'], section=section)
         elif request.method == 'POST':
-            section.title = request.form['sectionTitle'].title()
+            title = request.form['sectionTitle'].title()
+            if title:  # Basic validation to check if the section title is provided in the form
+                section = Section.query.filter_by(title=title).first()
+                if section:
+                    return render_template('editsection.html', section_title_error=True, title='Edit Section', user=session['user'], role=session['user_role'], section=section)
             section.description = request.form['sectionDescription']
             db.session.commit()
             return redirect(url_for('section', section_id=section_id))
@@ -232,11 +236,11 @@ def delete_section(section_id):
         if request.method == 'GET':
             return render_template('deletesection.html', title='Delete Section', user=session['user'], role=session['user_role'], section=section)
         elif request.method == 'POST':
-            sections_books = Book.query.filter_by(section_id=section_id).all()
-            for book in sections_books:
-                book = BookRequest.query.filter_by(book_id=book.id).first()
-                if book:
-                    return redirect(url_for('section', section_id=section_id, error='Section cannot be deleted because it contains books that have been requested.'))
+            books_in_section = Book.query.filter_by(section_id=section_id).all()
+            for book in books_in_section:
+                if book.available == False:
+                    return render_template('deletesection.html', title='Delete Section', user=session['user'], role=session['user_role'], section=section, book_error=True)
+               
                 db.session.delete(book)
                 # db.session.commit()
 
@@ -327,23 +331,36 @@ def author(author_id):
 @app.route("/book=<book_id>/edit", methods=['GET','POST'])
 def edit_book(book_id):
     book = Book.query.filter_by(id=book_id).first()
-
+    section = Section.query.filter_by(id=book.section_id).first()
+    sections = Section.query.all()
     if "user" in session and session['user_role'] == 'admin':
         if request.method == 'GET':
-            return render_template('editbook.html', title='Edit Book', user=session['user'], role=session['user_role'], book=book)
+            return render_template('editbook.html', title='Edit Book', user=session['user'], role=session['user_role'], book=book, section=section, sections=sections)
         elif request.method == 'POST':
+            # remove the book from the previous section
+            section.books.remove(book)
+            # add the book to the new section
+            book.section_id = request.form['section']
+            # section_id = request.form['section']
+            # section = Section.query.filter_by(id=section_id).first()
+            # section.books.append(book)
+
+
+            book_title = request.form['bookTitle'].upper()
+            book_description = request.form['bookDescription']
             authors = request.form['bookAuthor'].title().split(',')
             for author in authors:
                 authorname = Author.query.filter_by(name=author).first()
-                if not authorname:
-                    authorname = Author(name=author)
-                    db.session.add(authorname)
+                if authorname is None:
+                    auth = Author(name=author)
+                    db.session.add(auth)
                     db.session.commit()
-            book.title = request.form['bookTitle'].upper()
-            book.description = request.form['bookDescription']
-            book.authors.clear()
+            book.title = book_title
+            book.description = book_description
+            book.author.clear()
             for author in authors:
-                book.authors.append(Author.query.filter_by(name=author).first())
+                author = Author.query.filter_by(name=author).first()
+                book.author.append(author)
             db.session.commit()
             return redirect(url_for('book', book_id=book_id, success='Book updated successfully!'))
     else:
@@ -447,3 +464,4 @@ def return_book(book_request_id):
         else:
             return redirect("/")
         
+#

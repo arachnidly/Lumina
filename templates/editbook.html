@@ -59,6 +59,20 @@
             <div class="col-4">
                 <form method="POST" enctype="multipart/form-data" id="formy">
 
+                {# assign book to different section? #}
+                <div class="form-group">
+                    <label for="section" style="margin-bottom: 5%;">Reassign Book Section</label>
+                    <select class="form-control" id="section" name="section" required>
+                        <option value="{{section.id}}" selected>{{section.title}}</option>
+                        {% for sec in sections %}
+                        {# show options except the original one #}
+                        {% if sec.id != section.id %}
+                            <option value="{{sec.id}}">{{sec.title}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
                     <div class="form-group">
                         <label for="bookTitle" style="margin-bottom: 5%;">Book Title</label>
                         <input type="text" class="form-control" id="bookTitle" name="bookTitle" placeholder="Book title"

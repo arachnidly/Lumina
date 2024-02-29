@@ -78,10 +78,18 @@
                     <div class="col-md-4">
                         <a href="/section/{{section.id}}" class="btn btn-lg btn-decision">No</a>
                     </div>
+                    {%if book_error%}
+                    <div class="row mt-5">
+                    <p><span style="color: rgb(255, 0, 0);">This section cannot be deleted as it contains books that are
+                            currently issued by Users. Either reassign the books to a different section or wait until they are returned.
+                        </span></p>
+                    </div>
+                    {%endif%}
+                    
                 </div>
             </div>
         </div>
-        
+
 
 
     </div>
