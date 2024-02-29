@@ -16,7 +16,6 @@
 
         <!-- Navbar items -->
         <div class="collapse navbar-collapse" id="navbarNav">
-            {% for role in roles%}
             <ul class="navbar-nav ml-auto">
                 {% if role=='admin' %}
                 <li class="nav-item">
@@ -52,7 +51,6 @@
                 </li>
                 {%endif%}
             </ul>
-            {% endfor %}
         </div>
     </div>
 </nav>
@@ -84,7 +82,7 @@
 
                 <div class="row justify-content-center mt-1">
                     <p>
-                        {% for author in book['authors'] %}
+                        {% for author in book['author'] %}
                         {{author['name']}}{% if not loop.last %},{% endif %}
                         {% endfor %}
                     </p>
@@ -105,7 +103,6 @@
                 
                 <!-- based on user's role, implement some actions associated with this book -->
                 <div class="row justify-content-center mt-1" style="text-align: center;">
-                {% for role in roles %}
 
                     {% if role=='admin'%}
                 <!-- modify book type actions only available to admin -->
@@ -125,11 +122,14 @@
                                 <form action="/book/{{book.id}}/requestbook" method="post">
                                     <button type="submit" class="btn btn-custom">Request</button>
                                 </form>
+                                {% if quota_error %}
+                                    <p>You have reached the maximum number of books you can request (5).<br>
+                                    To make a request for this book, please delete one of your existing book requests<br>
+                                    or, if your book request has been approved, return the issued book.</p>
+                                {% endif %}
                             </div>
                             {# {% else %} #}
-                            {% if quota_error %}
-                                    <p>You have reached the maximum number of books you can request.</p>
-                            {% endif %}
+                            
 
                         {% else %}
                         <!-- if this book has been requested by ANY user -->
@@ -137,29 +137,30 @@
                             <!-- if this book has been requested by the current user -->
 
                             {% if book_request.issued == 0 %}
+                            <!-- Enter this code block if for the specific book_request the librarian hasn't approved the request yet -->
                                 <div class="col-md-4">
                                     <form action="/book_request/{{book_request.id}}/delete" method="post">
                                         <button type="submit" class="btn btn-custom">Delete Request</button>
                                     </form>
+                                    <!-- in this case the user can delete their book_request -->
                                 </div>
                             {% else %}
                                 <div class="col-md-4">
-                                    <a href="/book={{book.id}}/read" class="btn btn-custom">Read Book</a>
+                                    <a href="/book={{book.id}}/book_request={{book_request.id}}/read" class="btn btn-custom">Read Book</a>
                                 </div>
                                 <div class="col-md-4">
-                                    <form action="/book/{{book.id}}/return" method="post">
+                                    <form action="/book/{{book.id}}/book_request={{book_request.id}}/return" method="post">
                                         <button type="submit" class="btn btn-custom">Return Book</button>
                                     </form>
                                 </div>
                             {%endif%}
 
                             {% else %}
-                                    <p>This book has been requested by another user.</p>
+                                    <small>Cannot make a request for this book!<br/>This book has already been requested by another reader.</small>
                             {% endif %}
                         {% endif %}
                     {% endif %}
                 </div>
-                {% endfor %}
 
 
 

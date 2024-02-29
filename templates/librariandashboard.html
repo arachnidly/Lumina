@@ -39,14 +39,14 @@
 <!-- End of Navbar -->
 
 <!-- Main content -->
+<!-- Book Requests table -->
 <div class="container">
-    <!-- Book Requests table -->
     <div class="row">
         <div class="col-12">
             <h3 class="text-center mt-5">Book Requests</h3>
         </div>
     </div>
-    {% if book_requests %}
+    {% if pending_book_requests %}
     <div class="row">
         <div class="col-12">
             <table class="table table-hover mt-3" style="text-align: center;">
@@ -60,16 +60,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for book_request in book_requests %}
+                    {% for book_request in pending_book_requests %}
                     <tr>
-                        <td>{{book_request.id}}</td>
+                        <td>req{{book_request.id}}</td>
                         <td>{{book_request.book_title}}</td>
                         <td>{{book_request.username}}</td>
-                        <td>{{book_request.date_requested}}</td>
+                        <td>{{book_request.date_requested.strftime('%d-%m-%Y')}}</td>
                         <td>
-                        <form action="/book_request/{{book_request.id}}/approve" method="post">
-                            <button type="submit" class="btn btn-custom">Approve</button>
-                        </form>
+                            <form action="/book_request/{{book_request.id}}/approve" method="post">
+                                <button type="submit" class="btn btn-custom">Approve</button>
+                            </form>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -83,18 +83,18 @@
         </div>
     </div>
     {% endif %}
+</div>
+<!-- End of Book Requests table -->
 
-    <!-- End of Book Requests table -->
 
-
-    <!-- Currently Issued Books table -->
-
+<!-- Currently Issued Books table -->
+<div class="container">
     <div class="row">
         <div class="col-12">
             <h3 class="text-center mt-5">Currently Issued Books</h3>
         </div>
     </div>
-    {% if book_loans %}
+    {% if active_book_loans %}
     <div class="row">
         <div class="col-12">
             <table class="table table-hover mt-3" style="text-align: center;">
@@ -104,20 +104,22 @@
                         <th scope="col">Book Title</th>
                         <th scope="col">Issued to</th>
                         <th scope="col">Issued on</th>
-                        <th scope="col">Return by</th>
+                        <th scope="col">Due Date</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for loan in book_loans %}
+                    {% for loan in active_book_loans %}
                     <tr>
-                        <td>{{loan.id}}</td>
+                        <td>req{{loan.id}}</td>
                         <td>{{loan.book_title}}</td>
                         <td>{{loan.username}}</td>
-                        <td>{{loan.date_borrowed}}</td>
-                        <td>{{loan.return_date}}</td>
+                        <td>{{loan.date_issued.strftime('%d-%m-%Y')}}</td>
+                        <td>{{loan.date_due.strftime('%d-%m-%Y')}}</td>
                         <td>
-                            <a href="{{loan.id}}" class="btn-sm btn-custom">Return</a>
+                            <form action="/book_request/{{loan.id}}/return" method="post">
+                                <button type="submit" class="btn btn-custom">Revoke Access</button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
@@ -133,7 +135,7 @@
     </div>
     {% endif %}
 </div>
-    <!-- End of Currently Issued Books table -->
-          
+<!-- End of Currently Issued Books table -->
+
 <!-- End of main content inside container -->
 {% endblock %}

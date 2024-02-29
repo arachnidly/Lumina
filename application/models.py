@@ -31,8 +31,6 @@ class User(db.Model):
     quota = db.Column(db.Integer, default=0, nullable=False)
     books_requested = db.relationship('Book', secondary='book_request')
     
-
-
 # Association table for the many-to-many relationship between sections and books
 sections_books = db.Table('sections_books',
                           db.Column('section_id', db.Integer(), db.ForeignKey('section.id')),
@@ -56,6 +54,7 @@ class Author(db.Model):
     __tablename__ = 'author'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False, unique=True)
+    books = db.relationship('Book', secondary='book_authors', viewonly=True)
 
 
 class Book(db.Model):
@@ -68,7 +67,7 @@ class Book(db.Model):
     bookcover_link = db.Column(db.String, nullable=False)
     section_id = db.Column(db.Integer, db.ForeignKey('section.id'))
     # author = db.Column(db.String, db.ForeignKey("author.name"), nullable=False)
-    authors = db.relationship('Author', secondary='book_authors')
+    author = db.relationship('Author', secondary='book_authors')
     # getting rid of this is_issued = db.Column(db.Boolean, default=False) cuz request table will handle this
     avg_rating = db.Column(db.Float)
 
@@ -78,39 +77,25 @@ class Book(db.Model):
 class BookAuthors(db.Model):
     __tablename__ = 'book_authors'
     author_id = db.Column(db.Integer, db.ForeignKey("author.id"), primary_key=True, nullable=False)
-    book_id = db.Column(db.Integer, db.ForeignKey("book.id"), primary_key=True, nullable=False) 
+    book_id = db.Column(db.Integer, db.ForeignKey("book.id"), primary_key=True, nullable=False)
 
 class BookRequest(db.Model):
     """Model for book requests. Each request is made by a user and can be for one book."""
     __tablename__ = 'book_request'
 
     id = db.Column(db.Integer, primary_key=True)
+
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     book_title = db.Column(db.String(255)) # for ease of display
+    book_author = db.Column(db.String(255)) # for ease of display
     username = db.Column(db.String(30)) # for ease of display
     date_requested = db.Column(db.Date, default=db.func.current_date())
     issued = db.Column(db.Boolean, default=False)
-    date_issued = db.Column(db.String(10)) # storing date in format 'YYYY-MM-DD' so 10 characters
-    date_due = db.Column(db.String(10))
+    date_issued = db.Column(db.Date)
+    date_due = db.Column(db.Date)
     returned = db.Column(db.Boolean, default=False)
-
-
-# class BookLoan(db.Model):
-#     """Model for book loans. Each loan represents a book borrowed by a user."""
-
-#     __tablename__ = 'book_loan'
-
-#     id = db.Column(db.Integer, primary_key=True)
-#     book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-#     book_title = db.Column(db.String(255))
-#     username = db.Column(db.String(30))
-#     # must add date of borrowing
-#     date_borrowed = db.Column(db.Date, default=db.func.current_date())
-#     # add date of return which is 1 week after borrowing
-#     date_due = db.Column(db.Date, default=db.func.current_date() + timedelta(days=7))
-#     returned = db.Column(db.Boolean, default=False)
+    date_returned = db.Column(db.Date)
 
 
 class BookRating(db.Model):

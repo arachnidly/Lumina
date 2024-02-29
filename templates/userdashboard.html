@@ -35,40 +35,37 @@
 </nav>
 <!-- Navbar end -->
 
-<!-- Main content -->
+<!-- Book Requests table -->
 <div class="container">
-    <!-- Book Requests table -->
     <div class="row">
         <div class="col-12">
             <h3 class="text-center mt-5">My Book Requests</h3>
         </div>
     </div>
-    {% if book_requests %}
+    {% if pending_book_requests %}
     <div class="row">
         <div class="col-12">
             <table class="table table-hover mt-3" style="text-align: center;">
                 <thead>
                     <tr>
-                        <th scope="col">ID</th>
                         <th scope="col">Book Title</th>
+                        <th scope="col">Author</th>
                         <th scope="col">Requested on</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for request in book_requests%}
-
+                    {% for request in pending_book_requests%}
                     <tr>
-                        <td>{{request.id}}</td>
                         <td>{{request.book_title}}</td>
-                        <td>{{request.date_requested}}</td>
+                        <td>{{request.book_author}}</td>
+                        <td>{{request.date_requested.strftime('%d-%m-%Y')}}</td>
                         <td>
-                            <form action="/request/{{request.id}}/delete" method="post">
+                            <form action="/book_request/{{request.id}}/delete" method="post">
                                 <button type="submit" class="btn btn-custom">Delete Request</button>
                             </form>
                         </td>
                     </tr>
-
                     {% endfor %}
                 </tbody>
             </table>
@@ -82,40 +79,42 @@
     </div>
     {% endif %}
     <!-- End of Book Requests table -->
+</div>
 
-    <!-- Currently Issued Books table -->
+<!-- Currently Issued Books table -->
+<div class="container">
     <div class="row">
         <div class="col-12">
             <h3 class="text-center mt-5">Currently Issued Books</h3>
         </div>
     </div>
-    {% if book_loans %}
+    {% if active_book_loans %}
     <div class="row">
         <div class="col-12">
             <table class="table table-hover mt-3" style="text-align: center;">
                 <thead>
                     <tr>
-                        <th scope="col">ID</th>
                         <th scope="col">Book Title</th>
-                        <th scope="col">Return Due Date</th>
+                        <th scope="col">Issued on</th>
+                        <th scope="col">Return by</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for loan in book_loans%}
+                    {% for loan in active_book_loans%}
 
-                <tr>
-                    <td>{{loan.id}}</td>
-                    <td>{{loan.book_title}}</td>
-                    <td>{{loan.return_date}}</td>
-                    <td>
-                        <form action="/book_loan/{{book.id}}/return" method="post">
-                            <button type="submit" class="btn btn-custom">Return</button>
-                        </form>
-                    </td>
-                </tr>
+                    <tr>
+                        <td>{{loan.book_title}}</td>
+                        <td>{{loan.date_issued.strftime('%d-%m-%Y')}}</td>
+                        <td>{{loan.date_due.strftime('%d-%m-%Y')}}</td>
+                        <td>
+                            <form action="/book_request/{{loan.id}}/return" method="post">
+                                <button type="submit" class="btn btn-custom">Return</button>
+                            </form>
+                        </td>
+                    </tr>
 
-                {% endfor %}
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -132,4 +131,5 @@
         <!-- End of Currently Issued Books table and row-->
     </div>
     {% endif %}
+</div>
 {% endblock %}

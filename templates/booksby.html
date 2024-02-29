@@ -55,80 +55,51 @@
     </div>
 </nav>
 
-<!-- Search bar -->
-<div class="container mt-3">
-    <div class="row">
-        <div class="col-md-8">
-            <form method="get">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Search for books, authors, or sections"
-                        name="search_term">
-                    <div class="input-group-append">
-                        <button class="btn btn-custom" type="submit">Search</button>
+
+<!-- Display books by author -->
+<div class="container mt-2">
+    <div>
+        {% if role=='admin'%}
+        <a id="backlink" href="/manage">
+            {% else %}
+            <a id="backlink" href="/browse">
+                {% endif %}
+                <h4><- Back</h4>
+            </a>
+    </div>
+    <hr>
+
+    <div class="row justify-content-center" style="text-align: center;">
+        <div class="col-md-12">
+            <h3 class="mb-3">Books by {{author.name}}</h3>
+            {% if books %} <!-- Check if there are books in the section -->
+
+            <div class="row justify-content-center mb-2">
+
+                {% for book in books %}
+                <div class="card mx-2 book-card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">{{ book.title }}</h5>
+                        <p class="card-text" id="authornames">
+                            {% for author in book.author %}
+                            {{ author.name }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        {% if role=='admin' %}
+                        <a href="/book/{{ book.id }}" class="btn btn-custom">Manage</a>
+                        {% else %}
+                        <a href="/book/{{ book.id }}" class="btn btn-custom">View</a>
+                        {% endif %}
                     </div>
                 </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- end of search bar container -->
-
-<!-- Search results -->
-<div class="container mt-2">
-    <div class="row">
-        <div class="col-md-12">
-            {% if search_term%}
-            <h3>Search Results for "{{ search_term }}"</h3>
-            <hr>
-            {% if no_results %}
-            <p>No results found.</p>
-            {% else %}
-            {% if authors %}
-            <h4>Authors</h4>
-            {% for author in authors %}
-            <div>
-                <a href="/author/{{ author.id }}">{{ author.name }}</a>
-                <ul>
-                    {% for book in author.books %}
-                    <li>
-                        <a href="/book/{{ book.id }}">{{ book.title }}</a> by
-                        {% for book_author in book.author %}
-                        <a href="/author/{{ book_author.id }}">{{ book_author.name }}</a>{% if not loop.last %}, {%
-                        endif %}
-                        {% endfor %}
-                    </li>
-                    {% endfor %}
-                </ul>
+                {% endfor %}
             </div>
-            {% endfor %}
-            {% endif %}
-
-            {% if sections %}
-            <h4>Sections</h4>
-            <ul>
-                {% for section in sections %}
-                <li><a href="/section/{{ section.id }}">{{ section.title }}</a></li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-
-            {% if books %}
-            <h4>Books</h4>
-            <ul>
-                {% for book in books %}
-                <li>
-                    <a href="/book/{{ book.id }}">{{ book.title }}</a> by
-                    {% for author in book.author %}
-                    <a href="/author/{{ author.id }}">{{ author.name }}</a>{% if not loop.last %}, {% endif %}
-                    {% endfor %}
-                </li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            {% endif %}
+            {% else %}
+            <p class="text-muted">No books have been added to this section.</p> <!-- Message if no books -->
             {% endif %}
         </div>
     </div>
+
 </div>
 
 {% endblock %}

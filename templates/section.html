@@ -63,13 +63,11 @@
 
 <div class="container mt-3">
     <div>
-        {% for role in roles%}
         {% if role=='admin'%}
         <a id="backlink"href="/manage">
         {% else %}
         <a id="backlink"href="/browse">
         {% endif %}
-        {% endfor %}
             <h4><- Back</h4>
         </a>
 
@@ -129,7 +127,7 @@
                     <div class="card-body">
                         <h5 class="card-title text-center">{{ book.title }}</h5>
                         <p class="card-text" id="authornames">
-                            {% for author in book.authors %}
+                            {% for author in book.author %}
                             {{ author.name }}{% if not loop.last %}, {% endif %}
                             {% endfor %}
                         </p>
