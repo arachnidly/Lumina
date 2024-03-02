@@ -27,7 +27,6 @@ from application.controllers import *
 
 # import apis
 # from application.api import UserAPI, ExampleAPI, ...
-from application.api import UserAPI
 
 
 # create api instance and add resources
@@ -35,8 +34,7 @@ from application.api import UserAPI
 # api = Api(app)
 # app.app_context().push()
 
-# api.add_resource(UserAPI, "/api/user/<username>", "/api/user")
-api.add_resource(UserAPI, "/api/user", "/api/user/<string:username>")
+# api.add_resource(SectionApi, '/section', '/user/<int:user_id>')
 
 #
 
@@ -47,5 +45,4 @@ if __name__ == "__main__":
         debug=True,
         port=8080
     )
-
 
