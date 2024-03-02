@@ -51,11 +51,21 @@
 
             {% if sections %}
             <h4>Sections</h4>
-            <ul>
-                {% for section in sections %}
-                <li><a href="/section/{{ section.id }}">{{ section.title }}</a></li>
-                {% endfor %}
-            </ul>
+            {% for section in sections %}
+            <div>
+                <a href="/section/{{ section.id }}">{{ section.title }}</a>
+                <ul>
+                    {% for book in section.books %}
+                    <li>
+                        <a href="/book/{{ book.id }}">{{ book.title }}</a> by
+                        {% for author in book.author %}
+                        <a href="/author/{{ author.id }}">{{ author.name }}</a>{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
             {% endif %}
 
             {% if books %}
