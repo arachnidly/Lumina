@@ -6,6 +6,12 @@ from application.config import *
 import datetime
 import os
 
+def user_can_rate_book(user_id, book_id):
+    # Check for any book request for the user and book where the book was issued or returned
+    book_request = BookRequest.query.filter_by(user_id=user_id, book_id=book_id).filter((BookRequest.issued == True) | (BookRequest.returned == True)).first()
+    return book_request is not None
+
+
 # auto return issued books if overdue
 @app.before_request
 def auto_return():
@@ -31,18 +37,18 @@ def home():
     # if user isn't logged in, redirect to welcome page with login button
     if "user" in session:
         user = User.query.filter_by(username=session['user']).first()
-        pending_book_requests = BookRequest.query.filter_by(issued=False, returned=False).all()
-        user_pending_book_requests = BookRequest.query.filter_by(user_id=user.id, issued=False, returned=False).all()
-        all_book_loans = BookRequest.query.filter_by(issued=True, returned=False).all()
-        user_book_loans = BookRequest.query.filter_by(user_id=user.id, issued=True, returned=False).all()
-        completed_book_loans = BookRequest.query.filter_by(returned=True).all()
-        user_completed_book_loans = BookRequest.query.filter_by(user_id=user.id, returned=True).all()
+        pending_requests = BookRequest.query.filter_by(issued=False, returned=False).all()
+        user_pending_requests = BookRequest.query.filter_by(user_id=user.id, issued=False, returned=False).all()
+        issued_now = BookRequest.query.filter_by(issued=True, returned=False).all()
+        user_issued_now = BookRequest.query.filter_by(user_id=user.id, issued=True, returned=False).all()
+        books_read = BookRequest.query.filter_by(returned=True).all()
+        user_books_read = BookRequest.query.filter_by(user_id=user.id, returned=True).all()
         if session['user_role'] == 'admin':
-            return render_template('librariandashboard.html', title='Librarian Dashboard', user=session['user'], pending_book_requests=pending_book_requests, active_book_loans=all_book_loans, role=session['user_role'], completed_loans=completed_book_loans)
+            return render_template('librariandashboard.html', title='Librarian Dashboard', user=session['user'], pending_requests=pending_requests, issued_now=issued_now, role=session['user_role'], books_read=books_read)
         else:
             username = user.username
             page_title = username + "'s Dashboard"
-            return render_template('userdashboard.html', title=page_title, user=session['user'], pending_book_requests=user_pending_book_requests, active_book_loans=user_book_loans, role=session['user_role'], completed_loans=user_completed_book_loans)
+            return render_template('userdashboard.html', title=page_title, user=session['user'], pending_requests=user_pending_requests, issued_now=user_issued_now, role=session['user_role'], books_read=user_books_read)
         
     else:
         return render_template('welcome.html', title='Welcome')
@@ -124,7 +130,6 @@ def logout():
         session.pop("user", None)
     return redirect(url_for("home")) 
 
-
 # search page
 @app.route("/search", methods=['GET'])
 def search():
@@ -174,6 +179,8 @@ def add_section():
             return render_template('addsection.html', title='Add Section', user=session['user'], role=session['user_role'])
         if request.method == 'POST':
             title = request.form['sectionTitle'].title()
+            if title[0] == " ":
+                title = title[1:].title()
             description = request.form['sectionDescription']
             if title:  # Basic validation to check if the section title is provided in the form
                 section = Section.query.filter_by(title=title).first()
@@ -218,11 +225,15 @@ def edit_section(section_id):
             return render_template('editsection.html', title='Edit Section', user=session['user'], role=session['user_role'], section=section)
         elif request.method == 'POST':
             title = request.form['sectionTitle'].title()
+            if title[0] == " ":
+                title = title[1:]
+            description = request.form['sectionDescription']
             if title:  # Basic validation to check if the section title is provided in the form
-                section = Section.query.filter_by(title=title).first()
-                if section:
+                same_title_section = Section.query.filter_by(title=title).first()
+                if same_title_section:
                     return render_template('editsection.html', section_title_error=True, title='Edit Section', user=session['user'], role=session['user_role'], section=section)
-            section.description = request.form['sectionDescription']
+                section.title = title
+                section.description = description
             db.session.commit()
             return redirect(url_for('section', section_id=section_id))
     else:
@@ -242,6 +253,10 @@ def delete_section(section_id):
                     return render_template('deletesection.html', title='Delete Section', user=session['user'], role=session['user_role'], section=section, book_error=True)
                
                 db.session.delete(book)
+                authors = Author.query.all()
+                for author in authors:
+                    if len(author.books) == 0:
+                        db.session.delete(author)
                 # db.session.commit()
 
             db.session.delete(section)
@@ -260,6 +275,8 @@ def add_book(section_id):
             return render_template('addbook.html', title='Add Book', user=session['user'], role=session['user_role'], section=section)
         if request.method == 'POST':
             book_title = request.form['bookTitle'].upper()
+            if book_title[0] == " ":
+                book_title = book_title[1:]
             bt = book_title.lower()
             book_content = str(bt).replace(" ", "_")
             book_description = request.form['bookDescription']
@@ -303,20 +320,34 @@ def book(book_id):
 
         section = Section.query.filter_by(id=book.section_id).first()
 
-        requested = False
-        book_request = BookRequest.query.filter_by(book_id=book_id).first()
-        if book_request:
-            if book_request.returned == False:
-                requested = True
+        # pick the latest/current active book request with the book_id
     
+        book_request = BookRequest.query.filter_by(book_id=book_id, returned=False).first()
+
+        can_rate = user_can_rate_book(user.id, book.id)
         if request.method == 'GET':
-            return render_template('book.html', title=book.title, user=session['user'], quota=quota, role=session['user_role'], book=book, img=book.bookcover_link, section=section, book_request=book_request, available=book.available)
+            return render_template('book.html', title=book.title, user=session['user'], quota=quota, role=session['user_role'], book=book, img=book.bookcover_link, section=section, book_request=book_request, available=book.available, pdf=book.content_link, can_rate=can_rate)
         if request.method == 'POST':
             
             return redirect("/")
     else:
         return redirect("/")
     
+# read book
+@app.route("/book=<int:book_id>/book_request=<int:book_request_id>/read", methods=['GET'])
+def read_book(book_id, book_request_id):
+    if "user" in session:
+        user = User.query.filter_by(username=session['user']).first()
+        book = Book.query.filter_by(id=book_id).first()
+        book_request = BookRequest.query.filter_by(id=book_request_id).first()
+        if book_request.user_id != user.id:
+            return redirect("/")
+        if book_request.returned == False and book_request.issued == True:
+            return render_template('readbook.html', title=book.title, user=session['user'], role=session['user_role'], book=book, book_request=book_request)
+        else:
+            return redirect("/")
+    else:
+        return redirect("/")
 # books by author
 @app.route("/author/<author_id>", methods=['GET', 'POST'])
 def author(author_id):
@@ -341,12 +372,15 @@ def edit_book(book_id):
             section.books.remove(book)
             # add the book to the new section
             book.section_id = request.form['section']
+            section.books.append(book)
             # section_id = request.form['section']
             # section = Section.query.filter_by(id=section_id).first()
             # section.books.append(book)
 
 
             book_title = request.form['bookTitle'].upper()
+            if book_title[0] == " ":
+                book_title = book_title[1:]
             book_description = request.form['bookDescription']
             authors = request.form['bookAuthor'].title().split(',')
             for author in authors:
@@ -375,7 +409,15 @@ def delete_book(book_id):
         if request.method == 'GET':
             return render_template('deletebook.html', title='Delete Book', user=session['user'], role=session['user_role'], book=book)
         elif request.method == 'POST':
+            if book.available == False:
+                return render_template('deletebook.html', title='Delete Book', user=session['user'], role=session['user_role'], book=book, book_error=True)
+            os.remove(app.config['UPLOAD_FOLDER'] + "pdf/" + book.content_link + ".pdf")
+            os.remove(app.config['UPLOAD_FOLDER'] + "img/" + book.bookcover_link + ".jpg")
             db.session.delete(book)
+            authors = Author.query.all()
+            for author in authors:
+                if len(author.books) == 0:
+                    db.session.delete(author)
             db.session.commit()
             return redirect(url_for('section', section_id=section_id))
     else:
@@ -433,8 +475,7 @@ def approve_request(book_request_id):
             username = book_request.username
             book = Book.query.filter_by(id=book_request.book_id).first() # gettting the book that was requested
             user = User.query.filter_by(id=book_request.user_id).first() # getting the user that requested the book
-            book.is_issued = True # setting the is_issued attribute of the book to True
-            book_request.issued = True # setting the issued attribute of the book request to True (issued was previously False)
+            book_request.issued = True # setting the issued attribute of the book request to True (issued was previously False
             book_request.date_issued = datetime.date.today()
             book_request.date_due = datetime.date.today() + datetime.timedelta(days=7)
             book_request.auto_return_timestamp = datetime.datetime.now() + datetime.timedelta(days=7)
@@ -445,7 +486,8 @@ def approve_request(book_request_id):
             return redirect('/')
         else:
             return redirect("/")
-    
+
+
 
 # return issued book 
 @app.route("/book_request/<book_request_id>/return", methods=['GET','POST'])
@@ -464,4 +506,5 @@ def return_book(book_request_id):
         else:
             return redirect("/")
         
-#
+# rate book
+        
