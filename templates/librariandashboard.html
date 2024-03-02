@@ -24,7 +24,7 @@
                 <tbody>
                     {% for book_request in pending_requests %}
                     <tr>
-                        <td>{{book_request.book_title}}</td>
+                        <td><a href="/book/{{book_request.book_id}}">{{book_request.book_title}}</a></td>
                         <td>{{book_request.username}}</td>
                         <td>{{book_request.date_requested.strftime('%d-%m-%Y')}}</td>
                         <td>
@@ -71,7 +71,7 @@
                 <tbody>
                     {% for loan in issued_now %}
                     <tr>
-                        <td>{{loan.book_title}}</td>
+                        <td><a href="/book/{{loan.book_id}}">{{loan.book_title}}</a></td>
                         <td>{{loan.username}}</td>
                         <td>{{loan.date_issued.strftime('%d-%m-%Y')}}</td>
                         <td>{{loan.date_due.strftime('%d-%m-%Y')}}</td>

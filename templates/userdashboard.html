@@ -23,7 +23,7 @@
                 <tbody>
                     {% for request in pending_requests%}
                     <tr>
-                        <td>{{request.book_title}}</td>
+                        <td><a href="/book/{{request.book_id}}">{{request.book_title}}</a></td>
                         <td>{{request.book_author}}</td>
                         <td>{{request.date_requested.strftime('%d-%m-%Y')}}</td>
                         <td>
@@ -69,7 +69,7 @@
                 <tbody>
                     {% for loan in issued_now%}
                     <tr>
-                        <td>{{loan.book_title}}</td>
+                        <td><a href="/book/{{loan.book_id}}">{{loan.book_title}}</td>
                         <td>{{loan.date_issued.strftime('%d-%m-%Y')}}</td>
                         <td>{{loan.date_due.strftime('%d-%m-%Y')}}</td>
                         <td>
@@ -141,7 +141,6 @@
         </div>
     </div>
     {% endif %}
-    <!-- End of Past reading history -->
 </div>
-
+<!-- End of Past reading history -->
 {% endblock %}
