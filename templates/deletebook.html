@@ -40,6 +40,13 @@
                     <div class="col-md-4">
                         <a href="/book/{{book.id}}" class="btn btn-lg btn-decision">No</a>
                     </div>
+                    {%if book_error%}
+                    <div class="row mt-5">
+                    <p><span style="color: rgb(255, 0, 0);">This book cannot be deleted as it is currently requested by/issued to a user.
+                        Either revoke user's access to the book or wait until the book is returned before deleting it.
+                        </span></p>
+                    </div>
+                    {%endif%}
                 </div>
             </div>
         </div>
