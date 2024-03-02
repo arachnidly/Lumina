@@ -46,6 +46,7 @@ class Section(db.Model):
     avg_rating = db.Column(db.Float)
     # Establishing many-to-many relationship with books
     books = db.relationship('Book', secondary=sections_books)
+    
 
 
 class Author(db.Model):
@@ -67,9 +68,8 @@ class Book(db.Model):
     section_id = db.Column(db.Integer, db.ForeignKey('section.id'))
     # author = db.Column(db.String, db.ForeignKey("author.name"), nullable=False)
     author = db.relationship('Author', secondary='book_authors')
-    available = db.Column(db.Boolean, default=  True)
+    available = db.Column(db.Boolean, default=True)
     avg_rating = db.Column(db.Float)
-
 
 
 # Association table for the many-to-many relationship between books and authors
