@@ -94,8 +94,21 @@ class BookRequest(db.Model):
     date_issued = db.Column(db.Date)
     date_due = db.Column(db.Date)
     auto_return_timestamp = db.Column(db.DateTime)
-    returned = db.Column(db.Boolean, default=False)
-    date_returned = db.Column(db.Date)
+
+
+class ReadingHistory(db.Model):
+    """Model for reading history. Each history is made by a user and can be for one book."""
+    __tablename__ = 'reading_history'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    book_title = db.Column(db.String(255)) # for ease of display
+    book_author = db.Column(db.String(255)) # for ease of display
+    username = db.Column(db.String(30)) # for ease of display
+    date_issued = db.Column(db.Date)
+    date_returned = db.Column(db.Date, default=db.func.current_date())
 
 
 class BookRating(db.Model):
@@ -105,6 +118,5 @@ class BookRating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
-    username = db.Column(db.String(30))
     rating = db.Column(db.Integer, nullable=False)
     book = db.relationship('Book', backref='ratings')

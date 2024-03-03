@@ -18,24 +18,24 @@
         </div>
         <div class="col-md-8">
             <div class="container" style="text-align: center;">
-                <div class="row justify-content-center mt-4">
+                <div class="row justify-content-center">
                     <h2>{{book['title']}}</h2>
                 </div>
-                <div class="row justify-content-center mt-3">
+                <div class="row justify-content-center mt-1">
                     <h5>Author</h5>
                 </div>
 
-                <div class="row justify-content-center mt-1">
+                <div class="row justify-content-center">
                     <p>
                         {% for author in book['author'] %}
                         {{author['name']}}{% if not loop.last %},{% endif %}
                         {% endfor %}
                     </p>
                 </div>
-                <div class="row justify-content-center mt-2">
+                <div class="row justify-content-center">
                     <h5>Description</h5>
                 </div>
-                <div class="row justify-content-center mt-1">
+                <div class="row justify-content-center">
                     <p>{%if book.description%}</p>
                     <p style="font-size: 90%;">
                         {% for line in book.description.split('\n') %}
@@ -45,18 +45,46 @@
                     </p>
                     <p>{%else%}-{%endif%}</p>
                 </div>
+                <div class="row justify-content-center">
+                    {%if book.avg_rating == None%}
+                    <p>Average Reader Rating: -</p>
+                    {%else%}
+                    <p>Average Reader Rating: {{book.avg_rating}}</p>
+                    {%endif%}
+                </div>
+
+                {%if can_rate%}
+                <div class="row justify-content-center mb-2">
+                {% if user_rating == None %}
+
+               <div>You have not rated this book yet.<br>
+                <a href="/book={{book.id}}/rate">Rate?</a></div>
+            
+                {% else %}
+
+                <div>You rated this book: {{user_rating.rating}}.<br>
+                <a href="/book={{book.id}}/rate">Edit Rating?</a></div>
+                {%endif%}
+                </div>
+
+                {%endif%}
 
 
                 <!-- based on user's role, implement some actions associated with this book -->
-                <div class="row justify-content-center mt-1" style="text-align: center;">
+                <div class="row justify-content-center mt-3" style="text-align: center;">
 
                     {% if role=='admin'%}
                     <!-- modify book type actions only available to admin -->
                     <div class="col-md-4">
                         <a href="/book={{book.id}}/edit" class="btn btn-custom">Edit</a>
                     </div>
+                    {# view book pdf #}
                     <div class="col-md-4">
-                        <a href="/book={{book.id}}/delete" class="btn btn-danger">Delete</a>
+                        <a href="/book={{book.id}}/view" class="btn btn-custom">View Book PDF</a>
+                    </div>
+
+                    <div class="col-md-4">
+                        <a href="/book={{book.id}}/delete" class="btn btn-custom">Delete</a>
                     </div>
 
                     {% else %}
@@ -115,10 +143,8 @@
                         {% endif %}
                         {% endif %}
                         {# rate book #}
-                        {%if can_rate%}
-                        {# if already rated #}
-                        {# else give option to rate #}
-                        {%endif%}
+
+
                         {% endif %}
                 </div>
 

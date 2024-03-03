@@ -1,0 +1,49 @@
+{% extends 'body.html' %}
+{% block body %}
+
+<!-- Main content -->
+<div class="container mt-3">
+    <div>
+        <a id="backlink" href="/book/{{book.id}}">
+            <h4><- Back</h4>
+        </a>
+    </div>
+    <hr>
+    <div id="pagetitle" style="margin-top: 5%;">
+        <h2>Rate {{book.title}}</h2>
+    </div>
+
+    <!-- Add Section Form -->
+
+    <div class="container" id="pagetitle2" style="margin-top: 3%;">
+        <div class="row d-flex justify-content-center">
+
+            <div class="col-4">
+                <form method="post" id="formy">
+                    <fieldset>
+                        <legend>Choose a rating for this book:</legend>
+
+                        <input type="radio" id="rating1" name="rating" value="1">
+                        <label for="rating1">1</label><br>
+
+                        <input type="radio" id="rating2" name="rating" value="2">
+                        <label for="rating2">2</label><br>
+
+                        <input type="radio" id="rating3" name="rating" value="3">
+                        <label for="rating3">3</label><br>
+
+                        <input type="radio" id="rating4" name="rating" value="4">
+                        <label for="rating4">4</label><br>
+
+                        <input type="radio" id="rating5" name="rating" value="5">
+                        <label for="rating5">5</label><br>
+
+                        <input type="submit" value="Submit">
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

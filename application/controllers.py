@@ -8,25 +8,63 @@ import os
 
 def user_can_rate_book(user_id, book_id):
     # Check for any book request for the user and book where the book was issued or returned
-    book_request = BookRequest.query.filter_by(user_id=user_id, book_id=book_id).filter((BookRequest.issued == True) | (BookRequest.returned == True)).first()
-    return book_request is not None
+    active_book_request = BookRequest.query.filter_by(user_id=user_id, book_id=book_id, issued=True).first()
+    previous_read = ReadingHistory.query.filter_by(user_id=user_id, book_id=book_id).first()
+    if active_book_request or previous_read:
+        return True
+    else:
+        return False
 
+# calculate average rating for a book
+def calculate_avg_rating(book_id):
+    book = Book.query.filter_by(id=book_id).first()
+    ratings = BookRating.query.filter_by(book_id=book_id).all()
+    total_rating = 0
+    for rating in ratings:
+        total_rating += rating.rating
+    avg_rating = total_rating / len(ratings)
+    # round to 2 decimal places
+    avg_rating = round(avg_rating, 2)
+    book.avg_rating = avg_rating
+
+    db.session.commit()
+    return avg_rating
+
+# calculate average rating for a section
+def calculate_avg_rating_section(section_id):
+    section = Section.query.filter_by(id=section_id).first()
+    books = Book.query.filter_by(section_id=section_id).all()
+    total_rating = 0
+    total_books = 0
+    for book in books:
+        if book.avg_rating:
+            total_rating += book.avg_rating
+            total_books += 1
+    avg_rating = total_rating / total_books
+    # round to 2 decimal places
+    avg_rating = round(avg_rating, 2)
+    section.avg_rating = avg_rating
+    db.session.commit()
+    return avg_rating
 
 # auto return issued books if overdue
 @app.before_request
 def auto_return():
-    book_requests = BookRequest.query.filter_by(issued=True, returned=False).all()
+    book_requests = BookRequest.query.filter_by(issued=True).all()
     if book_requests is None:
         return
     for book_request in book_requests:
         if datetime.datetime.now() > book_request.auto_return_timestamp:
-            book_request.returned = True
             book = Book.query.filter_by(id=book_request.book_id).first()
             user = User.query.filter_by(id=book_request.user_id).first()
             user.quota -= 1
-            book_request.date_returned = datetime.date.today()
-            book_request.issued = False
             book.available = True
+            book_title = book_request.book_title
+            book_author = book_request.book_author
+            date_issued = book_request.date_issued
+            reading_history = ReadingHistory(book_id=book.id, user_id=user.id, book_title=book_title, book_author=book_author, username=user.username, date_issued=date_issued)
+            db.session.add(reading_history)
+            db.session.delete(book_request)
             db.session.commit()
     return
 
@@ -37,12 +75,12 @@ def home():
     # if user isn't logged in, redirect to welcome page with login button
     if "user" in session:
         user = User.query.filter_by(username=session['user']).first()
-        pending_requests = BookRequest.query.filter_by(issued=False, returned=False).all()
-        user_pending_requests = BookRequest.query.filter_by(user_id=user.id, issued=False, returned=False).all()
-        issued_now = BookRequest.query.filter_by(issued=True, returned=False).all()
-        user_issued_now = BookRequest.query.filter_by(user_id=user.id, issued=True, returned=False).all()
-        books_read = BookRequest.query.filter_by(returned=True).all()
-        user_books_read = BookRequest.query.filter_by(user_id=user.id, returned=True).all()
+        pending_requests = BookRequest.query.filter_by(issued=False).all()
+        user_pending_requests = BookRequest.query.filter_by(user_id=user.id, issued=False).all()
+        issued_now = BookRequest.query.filter_by(issued=True).all()
+        user_issued_now = BookRequest.query.filter_by(user_id=user.id, issued=True).all()
+        books_read = ReadingHistory.query.all()
+        user_books_read = ReadingHistory.query.filter_by(user_id=user.id).all()
         if session['user_role'] == 'admin':
             return render_template('librariandashboard.html', title='Librarian Dashboard', user=session['user'], pending_requests=pending_requests, issued_now=issued_now, role=session['user_role'], books_read=books_read)
         else:
@@ -319,35 +357,29 @@ def book(book_id):
         quota = user.quota
 
         section = Section.query.filter_by(id=book.section_id).first()
+        user_rating = BookRating.query.filter_by(user_id=user.id, book_id=book.id).first()
 
         # pick the latest/current active book request with the book_id
     
-        book_request = BookRequest.query.filter_by(book_id=book_id, returned=False).first()
+        book_request = BookRequest.query.filter_by(book_id=book_id).first()
 
         can_rate = user_can_rate_book(user.id, book.id)
-        if request.method == 'GET':
-            return render_template('book.html', title=book.title, user=session['user'], quota=quota, role=session['user_role'], book=book, img=book.bookcover_link, section=section, book_request=book_request, available=book.available, pdf=book.content_link, can_rate=can_rate)
-        if request.method == 'POST':
-            
-            return redirect("/")
+        print(can_rate)
+
+        return render_template('book.html', title=book.title, user=session['user'], quota=quota, role=session['user_role'], book=book, img=book.bookcover_link, section=section, book_request=book_request, available=book.available, pdf=book.content_link, can_rate=can_rate, user_rating=user_rating)
     else:
         return redirect("/")
     
-# read book
-@app.route("/book=<int:book_id>/book_request=<int:book_request_id>/read", methods=['GET'])
-def read_book(book_id, book_request_id):
-    if "user" in session:
-        user = User.query.filter_by(username=session['user']).first()
+    
+# view book pdf as librarian
+@app.route("/book=<int:book_id>/view", methods=['GET'])
+def view_book(book_id):
+    if "user" in session and session['user_role'] == 'admin':
         book = Book.query.filter_by(id=book_id).first()
-        book_request = BookRequest.query.filter_by(id=book_request_id).first()
-        if book_request.user_id != user.id:
-            return redirect("/")
-        if book_request.returned == False and book_request.issued == True:
-            return render_template('readbook.html', title=book.title, user=session['user'], role=session['user_role'], book=book, book_request=book_request)
-        else:
-            return redirect("/")
+        return render_template('readbook.html', title=book.title, user=session['user'], role=session['user_role'], book=book)
     else:
         return redirect("/")
+    
 # books by author
 @app.route("/author/<author_id>", methods=['GET', 'POST'])
 def author(author_id):
@@ -433,7 +465,7 @@ def request_book(book_id):
             user = User.query.filter_by(username=session['user']).first()
             quota = user.quota
             section = Section.query.filter_by(id=book.section_id).first()
-            book_request = BookRequest.query.filter_by(book_id=book_id, user_id=user.id, returned=False).first()
+            book_request = BookRequest.query.filter_by(book_id=book_id, user_id=user.id).first()
             if book_request:
                 return redirect(url_for('book', book_id=book_id,  book_request=book_request))
             if quota > 4:
@@ -477,15 +509,29 @@ def approve_request(book_request_id):
             user = User.query.filter_by(id=book_request.user_id).first() # getting the user that requested the book
             book_request.issued = True # setting the issued attribute of the book request to True (issued was previously False
             book_request.date_issued = datetime.date.today()
-            book_request.date_due = datetime.date.today() + datetime.timedelta(days=7)
-            book_request.auto_return_timestamp = datetime.datetime.now() + datetime.timedelta(days=7)
+            # book_request.date_due = datetime.date.today() + datetime.timedelta(days=7)
+            # book_request.auto_return_timestamp = datetime.datetime.now() + datetime.timedelta(days=7)
             # for testing auto return
-            # book_request.date_due = datetime.date.today() + datetime.timedelta(minutes=1)
-            # book_request.auto_return_timestamp = datetime.datetime.now() + datetime.timedelta(minutes=1)
+            book_request.date_due = datetime.date.today() + datetime.timedelta(minutes=2)
+            book_request.auto_return_timestamp = datetime.datetime.now() + datetime.timedelta(minutes=2)
             db.session.commit()
             return redirect('/')
         else:
             return redirect("/")
+        
+# read issued book
+@app.route("/book=<int:book_id>/book_request=<int:book_request_id>/read", methods=['GET'])
+def read_book(book_id, book_request_id):
+    if "user" in session:
+        user = User.query.filter_by(username=session['user']).first()
+        book = Book.query.filter_by(id=book_id).first()
+        book_request = BookRequest.query.filter_by(id=book_request_id).first()
+        if book_request.user_id != user.id:
+            return redirect("/")
+        else:
+            return render_template('readbook.html', title="Read "+book.title, user=session['user'], role=session['user_role'], book=book, book_request=book_request)
+    else:
+        return redirect("/")
 
 
 
@@ -495,16 +541,44 @@ def return_book(book_request_id):
     book_request = BookRequest.query.filter_by(id=book_request_id).first()
     if request.method == 'POST':
         if "user" in session:
-            book_request.returned = True
             book = Book.query.filter_by(id=book_request.book_id).first()
             user = User.query.filter_by(id=book_request.user_id).first()
             user.quota -= 1
             book.available = True
-            book_request.date_returned = datetime.date.today()
+            book_title = book_request.book_title
+            book_author = book_request.book_author
+            date_issued = book_request.date_issued
+            reading_history = ReadingHistory(book_id=book.id, user_id=user.id, book_title=book_title, book_author=book_author, username=user.username, date_issued=date_issued)
+            db.session.add(reading_history)
+            db.session.delete(book_request)
             db.session.commit()
             return redirect('/')
         else:
             return redirect("/")
         
 # rate book
-        
+@app.route("/book=<int:book_id>/rate", methods=['GET','POST'])
+def rate_book(book_id):
+    book = Book.query.filter_by(id=book_id).first()
+    if "user" in session and user_can_rate_book(User.query.filter_by(username=session['user']).first().id, book.id):
+        if request.method == 'GET':
+            return render_template('ratebook.html', title='Rate '+book.title, user=session['user'], role=session['user_role'], book=book)
+        if request.method == 'POST':
+            user = User.query.filter_by(username=session['user']).first()
+            rating = int(request.form['rating'])
+            user_rating = BookRating.query.filter_by(user_id=user.id, book_id=book.id).first()
+            if user_rating:
+                user_rating.rating = rating
+            else:
+                user_rating = BookRating(user_id=user.id, book_id=book.id, rating=rating)
+                db.session.add(user_rating)
+            if calculate_avg_rating(book_id):
+                book.avg_rating = calculate_avg_rating(book_id)
+            if calculate_avg_rating_section(book.section_id):
+                section = Section.query.filter_by(id=book.section_id).first()
+                section.avg_rating = calculate_avg_rating_section(book.section_id)
+
+            db.session.commit()
+            return redirect('/book/'+str(book_id))
+    else:
+        return redirect("/")
