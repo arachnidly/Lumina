@@ -1,0 +1,150 @@
+openapi: 3.0.0
+info:
+  title: Library Management System API
+  version: 1.0.0
+  description: This is the API documentation for the Library Management System.
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /api/sections:
+    get:
+      summary: List all sections
+      tags:
+        - Sections
+      responses:
+        '200':
+          description: A list of sections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Section'
+
+    post:
+      summary: Create a new section
+      tags:
+        - Sections
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SectionCreate'
+      responses:
+        '201':
+          description: Section created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+
+  /api/sections/{section_id}:
+    get:
+      summary: Get a section by ID
+      tags:
+        - Sections
+      parameters:
+        - in: path
+          name: section_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A single section
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        '404':
+          description: Section not found
+
+    put:
+      summary: Update a section
+      tags:
+        - Sections
+      parameters:
+        - in: path
+          name: section_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SectionUpdate'
+      responses:
+        '200':
+          description: Section updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        '404':
+          description: Section not found
+        '400':
+          description: Bad request (e.g., if the title already exists)
+
+    delete:
+      summary: Delete a section
+      tags:
+        - Sections
+      parameters:
+        - in: path
+          name: section_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Section deleted
+        '404':
+          description: Section not found
+
+components:
+  schemas:
+    Section:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        date_created:
+          type: string
+          format: date-time
+        description:
+          type: string
+        avg_rating:
+          type: number
+          format: float
+      required:
+        - id
+        - title
+
+    SectionCreate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+      required:
+        - title
+        - description
+
+    SectionUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+      required:
+        - title
+        - description
