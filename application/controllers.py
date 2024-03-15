@@ -1,5 +1,4 @@
 from flask import request, render_template, redirect, url_for, session
-# from flask_security import Security, UserMixin, RoleMixin, login_required, roles_required
 from flask import current_app as app
 from application.models import *
 from application.config import *
@@ -400,6 +399,8 @@ def edit_book(book_id):
         if request.method == 'GET':
             return render_template('editbook.html', title='Edit Book', user=session['user'], role=session['user_role'], book=book, section=section, sections=sections)
         elif request.method == 'POST':
+            if book.available == False:
+                return render_template('deletebook.html', title='Delete Book', user=session['user'], role=session['user_role'], book=book, book_error=True)
             # remove the book from the previous section
             section.books.remove(book)
             # add the book to the new section
@@ -509,11 +510,11 @@ def approve_request(book_request_id):
             user = User.query.filter_by(id=book_request.user_id).first() # getting the user that requested the book
             book_request.issued = True # setting the issued attribute of the book request to True (issued was previously False
             book_request.date_issued = datetime.date.today()
-            # book_request.date_due = datetime.date.today() + datetime.timedelta(days=7)
-            # book_request.auto_return_timestamp = datetime.datetime.now() + datetime.timedelta(days=7)
+            book_request.date_due = datetime.date.today() + datetime.timedelta(days=7)
+            book_request.auto_return_timestamp = datetime.datetime.now() + datetime.timedelta(days=7)
             # for testing auto return
-            book_request.date_due = datetime.date.today() + datetime.timedelta(minutes=2)
-            book_request.auto_return_timestamp = datetime.datetime.now() + datetime.timedelta(minutes=2)
+            # book_request.date_due = datetime.date.today() + datetime.timedelta(minutes=2)
+            # book_request.auto_return_timestamp = datetime.datetime.now() + datetime.timedelta(minutes=2)
             db.session.commit()
             return redirect('/')
         else:
@@ -580,5 +581,28 @@ def rate_book(book_id):
 
             db.session.commit()
             return redirect('/book/'+str(book_id))
+    else:
+        return redirect("/")
+    
+# list of users for librarian
+@app.route("/users", methods=['GET'])
+def users():
+    if "user" in session and session['user_role'] == 'admin':
+        users = User.query.all()
+        users = users[1:]
+        return render_template('userlist.html', title='Users', user=session['user'], role=session['user_role'], users=users)
+    else:
+        return redirect("/")
+
+# user profile
+@app.route("/user/<username>", methods=['GET', 'POST'])
+def user_profile(username):
+    if "user" in session:
+        user = User.query.filter_by(username=username).first()
+        if user.username == session['user'] or session['user_role'] == 'admin':
+            user_books_read = ReadingHistory.query.filter_by(user_id=user.id).all()
+            return render_template('userprofile.html', title='User Profile', user=session['user'], role=session['user_role'], user_profile=user, books_read=user_books_read)
+
+        return redirect("/")
     else:
         return redirect("/")

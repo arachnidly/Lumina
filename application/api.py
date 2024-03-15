@@ -62,8 +62,12 @@ class SectionApi(Resource):
     # DELETE method to delete a section
     def delete(self, section_id):
         section = Section.query.get_or_404(section_id)
-        db.session.delete(section)
-        db.session.commit()
+        # check if books in section are currently issued
+        if section.books:
+            for book in section.books:
+                abort(400, message="Please log in as librarian and first delete all books in this section. Then this section can be deleted")
+        else:
+            db.session.delete(section)
+            db.session.commit()
 
         return jsonify({'message': 'Section deleted successfully'})
-
