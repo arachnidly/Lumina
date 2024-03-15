@@ -21,19 +21,19 @@
             <div class="col-4">
                 <form method="POST" enctype="multipart/form-data" id="formy">
 
-                {# assign book to different section? #}
-                <div class="form-group">
-                    <label for="section" style="margin-bottom: 5%;">Reassign Book to a Different Section?</label>
-                    <select class="form-control" id="section" name="section" required>
-                        <option value="{{section.id}}" selected>{{section.title}}</option>
-                        {% for sec in sections %}
-                        {# show options except the original one #}
-                        {% if sec.id != section.id %}
+                    {# assign book to different section? #}
+                    <div class="form-group">
+                        <label for="section" style="margin-bottom: 5%;">Reassign Book to a Different Section?</label>
+                        <select class="form-control" id="section" name="section" required>
+                            <option value="{{section.id}}" selected>{{section.title}}</option>
+                            {% for sec in sections %}
+                            {# show options except the original one #}
+                            {% if sec.id != section.id %}
                             <option value="{{sec.id}}">{{sec.title}}</option>
-                        {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
 
                     <div class="form-group">
                         <label for="bookTitle" style="margin-bottom: 5%;">Book Title</label>
@@ -71,6 +71,15 @@
                         <button type="submit" class="btn btn-custom">Edit</button>
                     </div>
                 </form>
+                {%if book_error%}
+                <div class="row mt-5">
+                    <p><span style="color: rgb(255, 0, 0);">This book cannot be edited as it is currently requested
+                            by/issued to a user.
+                            Either revoke user's access to the book or wait until the book is returned before editing
+                            it.
+                        </span></p>
+                </div>
+                {%endif%}
                 {% if book_title_error %}
                 <p style="margin-top: 10%;"><span style="color: rgb(255, 0, 0); font">The title you entered already
                         exists. Please
