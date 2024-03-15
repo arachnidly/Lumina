@@ -89,6 +89,11 @@
 
                     {% else %}
                     <!-- user can only make book request and delete existing request IF YKNOW-->
+                    {% if has_bought %}
+                    <div class="col-md-4">
+                        <a href="/book={{book.id}}/view" class="btn btn-custom">Read Book PDF</a>
+                    </div>
+                    {% else %}
                     {% if available %}
                     <!-- if this book has not been requested by any user  -->
                     {# {%if quota < 5%} <!-- if user has not reached the maximum number of books they can request --> #}
@@ -142,9 +147,9 @@
                             another reader.</small>
                         {% endif %}
                         {% endif %}
-                        {# rate book #}
 
 
+                        {% endif %}
                         {% endif %}
                 </div>
 
@@ -154,6 +159,18 @@
 
         </div>
     </div>
+    <hr>
+    <!-- give option for lifetime access -->
+    {% if not has_bought and role == "user" %}
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-6" style="text-align: center;">
+            <h4>Want lifetime access to this book?</h4>
+            <p>Click the button below to purchase lifetime access to this book. You will be able to read this book
+                anytime, anywhere, and on any device.</p>
+            <a href="/book/{{book.id}}/buy" class="btn btn-custom">Buy</a>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 

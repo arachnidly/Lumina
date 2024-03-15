@@ -358,25 +358,41 @@ def book(book_id):
         section = Section.query.filter_by(id=book.section_id).first()
         user_rating = BookRating.query.filter_by(user_id=user.id, book_id=book.id).first()
 
+        # check if book has been purchased by user
+        bought = BooksBought.query.filter_by(user_id=user.id, book_id=book.id).first()
+        if bought:
+            has_bought = True
+        else:
+            has_bought = False
+
         # pick the latest/current active book request with the book_id
     
         book_request = BookRequest.query.filter_by(book_id=book_id).first()
 
         can_rate = user_can_rate_book(user.id, book.id)
-        print(can_rate)
 
-        return render_template('book.html', title=book.title, user=session['user'], quota=quota, role=session['user_role'], book=book, img=book.bookcover_link, section=section, book_request=book_request, available=book.available, pdf=book.content_link, can_rate=can_rate, user_rating=user_rating)
+
+        return render_template('book.html', title=book.title, user=session['user'], quota=quota, role=session['user_role'], book=book, img=book.bookcover_link, section=section, book_request=book_request, available=book.available, pdf=book.content_link, can_rate=can_rate, user_rating=user_rating, has_bought=has_bought)
     else:
         return redirect("/")
     
     
-# view book pdf as librarian
+# view book pdf as librarian or purchaser
 @app.route("/book=<int:book_id>/view", methods=['GET'])
 def view_book(book_id):
     if "user" in session and session['user_role'] == 'admin':
         book = Book.query.filter_by(id=book_id).first()
-        return render_template('readbook.html', title=book.title, user=session['user'], role=session['user_role'], book=book)
-    else:
+        return render_template('viewbook.html', title=book.title, user=session['user'], role=session['user_role'], book=book)
+    elif "user" in session and session['user_role'] == 'user':
+        # if user has bought the book
+        user = User.query.filter_by(username=session['user']).first()
+        book = Book.query.filter_by(id=book_id).first()
+        bought = BooksBought.query.filter_by(user_id=user.id, book_id=book.id).first()
+        if bought:
+            return render_template('viewbook.html', title=book.title, user=session['user'], role=session['user_role'], book=book)
+        else:
+            return redirect("/")
+    else:        
         return redirect("/")
     
 # books by author
@@ -599,10 +615,41 @@ def users():
 def user_profile(username):
     if "user" in session:
         user = User.query.filter_by(username=username).first()
-        if user.username == session['user'] or session['user_role'] == 'admin':
+        if session['user_role'] == 'admin':
             user_books_read = ReadingHistory.query.filter_by(user_id=user.id).all()
             return render_template('userprofile.html', title='User Profile', user=session['user'], role=session['user_role'], user_profile=user, books_read=user_books_read)
 
         return redirect("/")
+    else:
+        return redirect("/")
+    
+# user profile
+@app.route("/profile", methods=['GET', 'POST'])
+def profile():
+    if "user" in session and session['user_role'] == 'user':
+        user = User.query.filter_by(username=session['user']).first()
+        user_books_read = ReadingHistory.query.filter_by(user_id=user.id).all()
+        return render_template('userprofile.html', title='User Profile', user=session['user'], role=session['user_role'], user_profile=user, books_read=user_books_read)
+    else:
+        return redirect("/")
+    
+# buy book
+@app.route("/book/<int:book_id>/buy", methods=['GET','POST'])
+def buy_book(book_id):
+    book = Book.query.filter_by(id=book_id).first()
+    if "user" in session:
+        user = User.query.filter_by(username=session['user']).first()
+        already_bought = BooksBought.query.filter_by(user_id=user.id, book_id=book_id).first()
+        if already_bought:
+            return redirect(url_for('book', book_id=book_id))
+        else:
+            if request.method == 'GET':
+                return render_template('buybook.html', title='Buy '+book.title, user=session['user'], role=session['user_role'], book=book)
+            if request.method == 'POST':
+                user = User.query.filter_by(username=session['user']).first()
+                book_bought = BooksBought(user_id=user.id, book_id=book_id)
+                db.session.add(book_bought)
+                db.session.commit()
+                return redirect('/')
     else:
         return redirect("/")

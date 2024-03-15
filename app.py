@@ -11,8 +11,7 @@ from application.config import UPLOAD_FOLDER, KEY, DB
 def create_app(UPLOAD_FOLDER, KEY, DB):
     app = Flask(__name__)
     CORS(app)
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.sqlite3'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///dummy.sqlite3'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite3'
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     with open(KEY) as f:
         key = f.readline()
@@ -37,7 +36,6 @@ api = Api(app)
 app.app_context().push()
 
 api.add_resource(SectionApi, '/api/sections', '/api/sections/<int:section_id>')
-# api.add_resource(BookApi, '/api/books', '/api/books/<int:book_id>')
 
 
 # app run   

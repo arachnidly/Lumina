@@ -120,3 +120,12 @@ class BookRating(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
     rating = db.Column(db.Integer, nullable=False)
     book = db.relationship('Book', backref='ratings')
+
+
+class BooksBought(db.Model):
+    """Model for storing books bought by a user."""
+    __tablename__ = 'books_bought'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
