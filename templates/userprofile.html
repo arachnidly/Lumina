@@ -1,0 +1,55 @@
+{% extends "body.html" %}
+{% block body %}
+
+<!-- User profile -->
+<!-- Past reading history -->
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+        {% if role == 'admin' %}
+            <h3 class="text-center mt-5">{{user_profile.username}}'s Reading History</h3>
+        {% else %}
+            <h3 class="text-center mt-5">Your Reading History</h3>
+        {% endif %}
+        </div>
+    </div>
+    {% if books_read %}
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hover mt-3" style="text-align: center;">
+                <thead>
+                    <tr>
+                        <th scope="col">Book Title</th>
+                        <th scope="col">Author</th>
+                        <th scope="col">Issued on</th>
+                        <th scope="col">Returned on</th>
+                        {# <th scope="col">Your Rating</th> #}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in books_read%}
+                    <tr>
+                        <td>{{loan.book_title}}</td>
+                        <td>{{loan.book_author}}</td>
+                        <td>{{loan.date_issued.strftime('%d-%m-%Y')}}</td>
+                        <td>{{loan.date_returned.strftime('%d-%m-%Y')}}</td>
+                        {# show user's rating for the book if rated or not rated yet #}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <p class="text-center mt-3">You have previous no reading history.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+<!-- End of Past reading history -->
+
+
+
+{% endblock %}
