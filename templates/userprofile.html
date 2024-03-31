@@ -43,7 +43,11 @@
     {% else %}
     <div class="row">
         <div class="col-12">
+        {% if role == 'admin' %}
+            <p class="text-center mt-3">{{user_profile.username}} has no reading history.</p>
+        {% else %}
             <p class="text-center mt-3">You have previous no reading history.</p>
+        {% endif %}
         </div>
     </div>
     {% endif %}
