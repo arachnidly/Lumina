@@ -12,7 +12,7 @@ The project received a final score of 100. [See also](https://app.onlinedegree.i
 
 The result section of the project submission portal had an empty score card throughout the term, and the final score was revealed on the student dashboard, as usual.
 
-I'm so glad that the project team chose this term to merge the MAD-1 and MAD-2 Course Portals, because I stumbled upon the updated score card by accidentally clicking on the Result tab instead of Study Resources and also forgetting to choose MAD1 Jan 2024 in the drop down list, just out of habit.
+I'm so glad that the project team chose this term to merge the MAD-1 and MAD-2 project submission portals, because I stumbled upon the updated score card by accidentally clicking on the Result tab instead of Study Resources and also forgetting to choose MAD1 Jan 2024 in the drop down list, just out of habit.
 
 Project Result:
 
