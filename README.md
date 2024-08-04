@@ -4,7 +4,7 @@ Lumina is a library management web app created for the Modern Application Develo
 
 [Lumina-v1](https://github.com/aradhanachatterjee/Lumina-v1) is the repository where I built the app and used version control to manage the project.
 
-The 71st commit reflects the state of the project directory that was submitted for evaluation (without the Books subfolder in the static folder which was added in the latest commit after previously having been in the gitignore list).
+The 71st commit reflects the state of the project directory that was submitted for evaluation (without the Books subfolder in the static folder which was added in a subsequent commit after previously having been in the gitignore list).
 
 The project received a final score of 100. [See also](https://app.onlinedegree.iitm.ac.in/document_verification/a46b2bfaa759ee837e9118c03e25758e)
 
@@ -28,4 +28,4 @@ The answer is very much yes. I'm proud of this particular S grade from a score o
 
 ## Acknowledgments
 
-Before I publicly archive this repository, I must express my sincerest gratitude to Prof. Nitin Sir for his lectures, Thejesh Sir for his screencasts, the course instructor Adarsh Sir for his live sessions dealing with specific concepts and implementations and also for answering every single question in the project group, and my level2 viva examiner Sir, who was extremely kind and patient and extemely professional.
+I must express my sincerest gratitude to Prof. Nitin Sir for his lectures, Thejesh Sir for his screencasts, the course instructor Adarsh Sir for his live sessions dealing with specific concepts and implementations and also for answering every single question in the project group, and my level2 viva examiner Sir, who was extremely kind and patient and incredibly professional.
