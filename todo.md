@@ -1,6 +1,6 @@
 # TO DO
 
 - [x] Delete redundant files
-- [ ] Check if the project is working
-- [ ] Copy previously fixed code to the new project
+- [x] Check if the project is working
+- [x] Clean up database
 - [x] Commit changes after every step ASAP
