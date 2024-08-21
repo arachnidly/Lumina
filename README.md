@@ -1,5 +1,3 @@
 # Lumina
 
-## Description
-
 Lumina illuminates.
